@@ -3,7 +3,11 @@ import ClientorBox from "./ui/ClientorBox";
 function App() {
   return (
     <>
-      <ClientorBox />
+      <ClientorBox
+        handleSubmit={() => {
+          return true;
+        }}
+      />
     </>
   );
 }

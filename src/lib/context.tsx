@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext } from "react";
 
 interface ClientorContexttype {
-  
+
 }
 
 const ClientorContext = createContext<ClientorContexttype | null>(null);
