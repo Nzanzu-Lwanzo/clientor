@@ -7,7 +7,7 @@ const Bottom = () => {
 
   return (
     <div className="clientor-bottom">
-      <div className="text">
+      <div className="settings">
         <span className="count-chars">2000 chars</span>
         {/* Switch light-dark mode */}
         <IconBtn action={action}>

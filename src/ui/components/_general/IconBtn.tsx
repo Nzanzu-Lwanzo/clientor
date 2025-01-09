@@ -1,14 +1,12 @@
-import React from "react";
+import React, { ButtonHTMLAttributes } from "react";
 
-interface Props {
-  children: React.ReactNode;
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   action: () => void;
-  type?: "submit" | "button";
-}
+};
 
-const IconBtn = ({ action, children, type = "button" }: Props) => {
+const IconBtn :React.FC<ButtonProps> = ({ action, children, ...props }: ButtonProps) => {
   return (
-    <button className="icon-btn center" onClick={action} type={type}>
+    <button className="icon-btn center" onClick={action} {...props}>
       {children}
     </button>
   );

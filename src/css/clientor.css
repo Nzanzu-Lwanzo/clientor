@@ -16,10 +16,10 @@
     }
 
     &:disabled {
-      background-color: #EEEE;
-      cursor:not-allowed;
+      background-color: #eeee;
+      cursor: not-allowed;
       &:hover {
-        background-color: #EEE;
+        background-color: #eee;
         color: #000;
       }
     }
@@ -37,18 +37,18 @@
 
   .square-btn {
     background-color: #151b23;
-    color: #FFF;
+    color: #fff;
     &:hover {
       background-color: var(--accent);
-      color: #FFF;
+      color: #fff;
     }
 
     &:disabled {
       background-color: #333;
-      cursor:not-allowed;
+      cursor: not-allowed;
       &:hover {
         background-color: #333;
-        color: #FFF;
+        color: #fff;
       }
     }
   }
@@ -106,6 +106,24 @@
 
 #clientor-main-container .clientor-top {
   justify-content: flex-end;
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.8rem;
+  }
+
+  .float-on-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  #hide-float-menu {
+    display: none;
+  }
 }
 
 #clientor-main-container .clientor-bottom {
@@ -176,9 +194,59 @@
 @media only all and (max-width: 640px) {
   #clientor-main-container {
     width: 90%;
+    position: relative;
   }
 
-  #clientor-main-container .clientor-top > * {
-    gap: 0.5rem;
+  #clientor-main-container:has(.float-on-mobile.show) .clientor-bottom {
+    justify-content: flex-start;
+  }
+
+  #clientor-main-container .clientor-top {
+    justify-content: space-between;
+    & > * {
+      gap: 0.5rem;
+    }
+
+    .float-on-mobile {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      padding: 1rem;
+      background-color: var(--iconBtn-bg);
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: 0.1s ease-out;
+      transform: translateX(100%);
+
+      @media (prefers-color-scheme: dark) {
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      @media (prefers-color-scheme: light) {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      &.show {
+        transform: none;
+      }
+    }
+
+    #hide-float-menu {
+      display: flex;
+      margin-top: 80px;
+    }
+  }
+
+  #clientor-main-container .clientor-top,
+  #clientor-main-container .clientor-bottom {
+    padding-inline: 0.8rem;
+  }
+
+  #clientor-main-container .clientor-bottom {
+    justify-content: flex-end;
+    .settings {
+      display: none;
+    }
   }
 }
