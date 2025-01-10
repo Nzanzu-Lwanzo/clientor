@@ -74,16 +74,20 @@
   cursor: pointer;
   background-color: transparent;
 
-  &:hover {
-    background-color: var(--iconBtn-bg);
+  &.active {
     svg {
       stroke: var(--accent);
     }
   }
+
+  &.active,
+  &:hover {
+    background-color: var(--iconBtn-bg);
+  }
 }
 
 #clientor-main-container {
-  min-height: 400px;
+  min-height: 200px;
   width: 600px;
   background-color: var(--box-bg);
   border-radius: 3px;
@@ -102,10 +106,15 @@
   display: flex;
   align-items: center;
   gap: 2rem;
+
+  position: sticky;
+  background-color: var(--box-bg);
 }
 
 #clientor-main-container .clientor-top {
   justify-content: flex-end;
+  border-bottom: 1px solid var(--standout);
+  top: 0;
 
   .actions {
     display: flex;
@@ -114,7 +123,7 @@
     gap: 0.8rem;
   }
 
-  .float-on-mobile {
+  .switched-menu {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -124,10 +133,16 @@
   #hide-float-menu {
     display: none;
   }
+
+  #show-switched-menu {
+    display: none;
+  }
 }
 
 #clientor-main-container .clientor-bottom {
   justify-content: space-between;
+  border-top: 1px solid var(--standout);
+  bottom: 0;
 }
 
 #clientor-main-container .clientor-top > *,
@@ -141,17 +156,17 @@
 
 #clientor-main-container .clientor-bottom .count-chars {
   font-size: 0.7rem;
-  color: var(--standout);
+  color: grey;
 }
 
 #clientor-main-container #textarea {
   flex-grow: 1;
-  border-block: 1px solid var(--standout);
+  overflow: auto;
 }
 
 #clientor-main-container #textarea #text {
   width: 100%;
-  height: 100%;
+  height: fit-content;
   resize: none;
   padding: 1rem;
   font-size: 0.95rem;
@@ -197,44 +212,28 @@
     position: relative;
   }
 
-  #clientor-main-container:has(.float-on-mobile.show) .clientor-bottom {
-    justify-content: flex-start;
-  }
-
   #clientor-main-container .clientor-top {
     justify-content: space-between;
+    gap: 0.5rem;
+
     & > * {
       gap: 0.5rem;
     }
 
-    .float-on-mobile {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      top: 0;
-      padding: 1rem;
-      background-color: var(--iconBtn-bg);
-      flex-direction: column;
-      justify-content: flex-end;
-      transition: 0.1s ease-out;
-      transform: translateX(100%);
+    .switched-menu {
+      gap: 0.5rem;
 
-      @media (prefers-color-scheme: dark) {
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
-      }
-
-      @media (prefers-color-scheme: light) {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 5px rgba(0, 0, 0, 0.05);
+      &.hide {
+        display: none;
       }
 
       &.show {
-        transform: none;
+        display: flex;
       }
     }
 
-    #hide-float-menu {
+    #show-switched-menu {
       display: flex;
-      margin-top: 80px;
     }
   }
 
@@ -244,9 +243,11 @@
   }
 
   #clientor-main-container .clientor-bottom {
-    justify-content: flex-end;
+    gap: 0.5rem;
+
+    .actions,
     .settings {
-      display: none;
+      gap: 0.5rem;
     }
   }
 }

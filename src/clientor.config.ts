@@ -1,9 +1,9 @@
-interface ClientorConfigType {
-    mode : 'mdx' | 'richtext'
+export interface ClientorConfigType {
+  showCountChars: boolean;
 }
 
-const ClientorConfiguration:ClientorConfigType = {
-    mode : 'mdx'
-}   
+const ClientorDefaultConfiguration: ClientorConfigType = {
+  showCountChars: true,
+};
 
-export default ClientorConfiguration
+export default ClientorDefaultConfiguration;

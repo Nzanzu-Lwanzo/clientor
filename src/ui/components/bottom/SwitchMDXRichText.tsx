@@ -1,24 +1,24 @@
-import ClientorStore from "../../../lib/store";
+import { memo } from "react";
+import { useClientorContext } from "../../../lib/context";
 
-const SwitchMDXRichText = () => {
-  const { mode, setMode } = ClientorStore();
+const SwitchMDXRichText = memo(() => {
+  const { editorType, setEditorType } = useClientorContext();
 
   return (
     <button
       type="button"
       className="square-btn"
       onClick={() => {
-        if (mode === "mdx") {
-          setMode("rte");
+        if (editorType === "mdx") {
+          setEditorType("rtx");
         } else {
-          setMode("mdx");
+          setEditorType("mdx");
         }
       }}
-      disabled
     >
-      {mode === "rte" ? "RICH TEXT" : "MARKDOWN"}
+      {editorType === "rtx" ? "RTX" : "MDX"}
     </button>
   );
-};
+});
 
 export default SwitchMDXRichText;

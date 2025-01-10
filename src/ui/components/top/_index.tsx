@@ -11,88 +11,116 @@ import {
   RemoveFormatting,
   EllipsisVertical,
   X,
+  Sun,
 } from "lucide-react";
-import IcconBtn from "../_general/IconBtn";
-import { useState } from "react";
+import IconBtn from "../_general/IconBtn";
+import { useState, memo, useCallback } from "react";
+import { EditMode, useClientorContext } from "../../../lib/context";
 
-const Top = () => {
-  const action = () => console.log("Action in topbar");
+const Top = memo(() => {
+  const [menuSwitched, setMenuSwitched] = useState(false);
+  const { setEditMode } = useClientorContext();
 
-  const [showFloatMenu, setShowFloatMenu] = useState(false);
+  const editModeSetter = useCallback((mode: EditMode) => {
+    setEditMode((prev) => {
+      if (prev.includes(mode)) {
+        return prev.filter((m) => m !== mode);
+      } else {
+        return [...prev, mode];
+      }
+    });
+  }, []);
 
   return (
     <div className="clientor-top">
       <div className="text-style">
-        {/* Insert a Heading */}
-        <IcconBtn action={action}>
-          <Heading1 size={19} />
-        </IcconBtn>
+        <div className={`switched-menu ${menuSwitched ? "hide" : "show"}`}>
+          {/* Insert a Heading */}
+          <IconBtn type="button">
+            <Heading1 size={19} />
+          </IconBtn>
 
-        {/* Bold the text */}
-        <IcconBtn action={action}>
-          <Bold size={19} />
-        </IcconBtn>
+          {/* Bold the text */}
+          <IconBtn
+            onClick={() => {
+              editModeSetter("bold");
+            }}
+            editMode="bold"
+            type="button"
+          >
+            <Bold size={19} />
+          </IconBtn>
 
-        {/* Italic the text */}
-        <IcconBtn action={action}>
-          <Italic size={19} />
-        </IcconBtn>
+          {/* Italic the text */}
+          <IconBtn
+            onClick={() => {
+              editModeSetter("italic");
+            }}
+            editMode="italic"
+            type="button"
+          >
+            <Italic size={19} />
+          </IconBtn>
 
-        {/* Underline the text */}
-        <IcconBtn action={action}>
-          <Underline size={19} />
-        </IcconBtn>
+          {/* Underline the text */}
+          <IconBtn
+            onClick={() => {
+              editModeSetter("underline");
+            }}
+            editMode="underline"
+            type="button"
+          >
+            <Underline size={19} />
+          </IconBtn>
 
-        {/* Make a list */}
-        <IcconBtn action={action}>
-          <List size={19} />
-        </IcconBtn>
+          {/* Make a list */}
+          <IconBtn type="button">
+            <List size={19} />
+          </IconBtn>
+        </div>
 
-        <div
-          className={`float-on-mobile ${showFloatMenu ? "show" : undefined}`}
-        >
+        <div className={`switched-menu ${menuSwitched ? "show" : "hide"}`}>
           {/* Remove formatting */}
-          <IcconBtn action={action}>
+          <IconBtn type="button">
             <RemoveFormatting size={19} />
-          </IcconBtn>
+          </IconBtn>
 
           {/* Add a link */}
-          <IcconBtn action={action}>
+          <IconBtn type="button">
             <Link size={19} />
-          </IcconBtn>
+          </IconBtn>
 
           {/* Reference somebody */}
-          <IcconBtn action={action}>
+          <IconBtn type="button">
             <AtSign size={19} />
-          </IcconBtn>
+          </IconBtn>
 
           {/* Insert an image */}
-          <IcconBtn action={action}>
+          <IconBtn type="button">
             <Image size={19} />
-          </IcconBtn>
+          </IconBtn>
 
           {/* Upload a file */}
-          <IcconBtn action={action}>
+          <IconBtn type="button">
             <Paperclip size={19} />
-          </IcconBtn>
+          </IconBtn>
 
-          {/* Hide this element on mobile*/}
-          <IcconBtn
-            action={action}
-            id="hide-float-menu"
-            onClick={() => setShowFloatMenu(false)}
-          >
-            <X size={19} />
-          </IcconBtn>
+          <IconBtn type="button">
+            <Sun size={19} />
+          </IconBtn>
         </div>
       </div>
       <div className="actions">
-        <IcconBtn action={action} onClick={() => setShowFloatMenu(true)}>
-          <EllipsisVertical size={19} />
-        </IcconBtn>
+        <IconBtn
+          onClick={() => setMenuSwitched((prev) => !prev)}
+          id="show-switched-menu"
+          type="button"
+        >
+          {menuSwitched ? <X size={19} /> : <EllipsisVertical size={19} />}
+        </IconBtn>
       </div>
     </div>
   );
-};
+});
 
 export default Top;
