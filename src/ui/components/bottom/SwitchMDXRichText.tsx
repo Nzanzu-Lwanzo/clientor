@@ -9,7 +9,7 @@ const SwitchMDXRichText = memo(() => {
       type="button"
       className="square-btn"
       onClick={() => {
-        if (editorType === "mdx") {
+        if (["mdx", "preview"].includes(editorType)) {
           setEditorType("rtx");
         } else {
           setEditorType("mdx");

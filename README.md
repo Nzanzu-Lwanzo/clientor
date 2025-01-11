@@ -21,3 +21,9 @@ All the codes lives inside of the src folder which contains three subfolders.
 3. ### ui
 
    This is the folder where live the components and only the components. The main component exposed by the package lives in this file : [ClientorBox.tsx](src/ui/ClientorBox.tsx)
+
+# TODO
+
+- [ ] Style the elements inside of the previewer box (see #content div element) so they look good (tables, lists, anchor tags, images, ...)
+- [ ] Implement the Rich Text editing functionnality (bold, italic and underline to start)
+- [ ] Add a button to directly delete everything we have written
