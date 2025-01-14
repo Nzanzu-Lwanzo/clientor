@@ -6,9 +6,7 @@ function App() {
     <ClientorContextProvider>
       <ClientorBox
         handleSubmit={(text) => {
-          console.log(text);
-
-          return true;
+          return text.raw !== "" && text.raw.length > 0;
         }}
         maxContentLength={{
           value: 12,
@@ -21,6 +19,10 @@ function App() {
           handler() {
             console.log("You cannot submit");
           },
+        }}
+        playSounds={{
+          onSend: true,
+          onError: true,
         }}
       />
     </ClientorContextProvider>

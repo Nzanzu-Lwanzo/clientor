@@ -7,6 +7,7 @@ import ClientorDefaultConfiguration from "../clientor.config";
 import { useClientorContext } from "../lib/context";
 import Preview from "./components/preview/_index";
 import { marked } from "marked";
+import { playSoundOnError, playSoundOnSend } from "../lib/sounds";
 
 const defaulyBoxStyles: CSSProperties = {
   // maxHeight: "350px",
@@ -38,6 +39,11 @@ interface ClientorBoxProps extends TextareaPropsType, BottomPropsType {
     value: number;
     handler: () => void;
   };
+  playSounds?: {
+    onSend?: boolean | HTMLAudioElement;
+    onDelete?: boolean | HTMLAudioElement;
+    onError?: boolean | HTMLAudioElement;
+  };
 }
 
 const ClientorBox = ({
@@ -46,8 +52,16 @@ const ClientorBox = ({
   showCountChars,
   maxContentLength,
   minContentLength,
+  playSounds,
 }: ClientorBoxProps) => {
-  const { rawText, htmlText, editorType } = useClientorContext();
+  const {
+    rawText,
+    htmlText,
+    editorType,
+    textAreaDivRef,
+    setRawText,
+    setHtmlText,
+  } = useClientorContext();
 
   return (
     <>
@@ -60,7 +74,9 @@ const ClientorBox = ({
             minContentLength.handler();
           }
 
-          handleSubmit(
+          // This is so we can make decisions and perform actions
+          // based on wether the message was successfully successfullyHandled or whatever
+          let successfullyHandled = handleSubmit(
             {
               html:
                 editorType !== "rtx"
@@ -70,6 +86,29 @@ const ClientorBox = ({
             },
             event
           );
+
+          if (successfullyHandled) {
+            // Play sound on send
+            if (playSounds?.onSend == true) {
+              playSoundOnSend();
+            } else if (playSounds?.onSend instanceof HTMLAudioElement) {
+              playSoundOnSend(playSounds?.onSend);
+            }
+
+            // Delete everything in the box
+            // update the text states
+            if (textAreaDivRef.current) {
+              textAreaDivRef.current.innerHTML = "";
+              setRawText("");
+              setHtmlText("");
+            }
+          } else {
+            if (playSounds?.onError == true) {
+              playSoundOnError();
+            } else if (playSounds?.onError instanceof HTMLAudioElement) {
+              playSoundOnError(playSounds?.onError);
+            }
+          }
         }}
         style={{ ...defaulyBoxStyles, ...boxStyle }}
       >

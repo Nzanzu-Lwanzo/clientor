@@ -16,7 +16,21 @@ const SwitchMDXRichText = memo(() => {
         }
       }}
     >
-      {editorType === "rtx" ? "RTX" : "MDX"}
+      {(function () {
+        switch (editorType) {
+          case "mdx": {
+            return "MDX";
+          }
+
+          case "rtx": {
+            return "RTX";
+          }
+
+          case "preview": {
+            return "VIEW";
+          }
+        }
+      })()}
     </button>
   );
 });
