@@ -16,7 +16,6 @@ import {
 import IconBtn from "../_general/IconBtn";
 import { useState, memo, useCallback } from "react";
 import { EditMode, useClientorContext } from "../../../lib/context";
-import { getElementWithNewTag } from "../../../lib/helpers";
 
 type DoType = "apply" | "unapply";
 type ActionFnType = (action: DoType) => void;
@@ -28,73 +27,40 @@ const Top = memo(() => {
 
   const MapModesToActionFns: Record<EditMode, ActionFnType> = {
     bold: (action) => {
-      const textarea = textAreaDivRef.current;
       switch (action) {
         case "apply": {
-          if (textarea) {
-            const withSelected_BOLD = getElementWithNewTag({
-              textarea,
-              tag: "strong",
-            });
-            if (withSelected_BOLD) {
-              setHtmlText(withSelected_BOLD);
-            }
-          }
+          // APPLY BOLD
           break;
         }
 
         case "unapply": {
-          console.log("I UNAPPLY BOLD");
-
+          // UNAPPLY BOLD
           break;
         }
       }
     },
     italic: (action) => {
-      const textarea = textAreaDivRef.current;
       switch (action) {
         case "apply": {
-          if (textarea) {
-            const withSelected_ITALIC = getElementWithNewTag({
-              textarea,
-              tag: "i",
-            });
-
-            console.log(withSelected_ITALIC);
-
-            if (withSelected_ITALIC) {
-              setHtmlText(withSelected_ITALIC);
-            }
-          }
+          // APPLY ITALIC
           break;
         }
 
         case "unapply": {
-          console.log("I UNAPPLY BOLD");
-
+          // UNAPPLY ITALIC
           break;
         }
       }
     },
     underline: (action) => {
-      const textarea = textAreaDivRef.current;
       switch (action) {
         case "apply": {
-          if (textarea) {
-            const withSelected_UNDERLINED = getElementWithNewTag({
-              textarea,
-              tag: "u",
-            });
-            if (withSelected_UNDERLINED) {
-              setHtmlText(withSelected_UNDERLINED);
-            }
-          }
+          // APPLY UNDERLINE
           break;
         }
 
         case "unapply": {
-          console.log("I UNAPPLY BOLD");
-
+          // UNAPPLY UNDERLINE
           break;
         }
       }

@@ -64,7 +64,9 @@ export const ClientorContextProvider = ({
     if (textarea) {
       document.addEventListener("selectionchange", function () {
         if (window.getSelection()?.isCollapsed) {
-          setEditMode(["none"]);
+          // This is the place where we could
+          // unnaply all the styles, in case the user
+          // has unfocused or finished typing
           return;
         }
       });
