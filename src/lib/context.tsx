@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export type EditMode = "bold" | "italic" | "underline" | "none";
 
@@ -35,7 +41,7 @@ export const ClientorContextProvider = ({
   const [rawText, setRawText] = useState("");
   const [htmlText, setHtmlText] = useState("");
   const [editModes, setEditMode] = useState<EditMode[]>(["none"]);
-  const [editorType, setEditorType] = useState<EditorType>("mdx");
+  const [editorType, setEditorType] = useState<EditorType>("rtx");
   const textAreaDivRef = useRef<HTMLDivElement | null>(null);
   const previewDivRef = useRef<HTMLDivElement | null>(null);
 
@@ -51,6 +57,19 @@ export const ClientorContextProvider = ({
     textAreaDivRef,
     previewDivRef,
   };
+
+  useEffect(() => {
+    const textarea = textAreaDivRef.current;
+
+    if (textarea) {
+      document.addEventListener("selectionchange", function () {
+        if (window.getSelection()?.isCollapsed) {
+          setEditMode(["none"]);
+          return;
+        }
+      });
+    }
+  }, []);
 
   return (
     <ClientorContext.Provider value={value}>

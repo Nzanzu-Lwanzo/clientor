@@ -11,7 +11,7 @@ const Preview = () => {
       style={{ display: editorType === "preview" ? "block" : "none" }}
     >
       <div className="preview-top">
-        <span className="title">Preview MDX</span>
+        {/* <span className="title">Preview MDX</span> */}
         <div className="actions"></div>
       </div>
       <div
