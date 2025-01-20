@@ -11,13 +11,15 @@ function App() {
         maxContentLength={{
           value: 12,
           handler() {
-            console.log("You cannot type no more ");
+            console.log(
+              "You cannot type no more because max content length is 12 "
+            );
           },
         }}
         minContentLength={{
           value: 6,
           handler() {
-            console.log("You cannot submit");
+            console.log("You cannot submit because min content length is 6");
           },
         }}
         playSounds={{

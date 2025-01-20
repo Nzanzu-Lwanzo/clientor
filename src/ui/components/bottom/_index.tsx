@@ -20,7 +20,7 @@ const Bottom = memo(({ showCountChars }: { showCountChars: boolean }) => {
         {["mdx", "preview"].includes(editorType) && (
           <IconBtn
             type="button"
-            onClick={() => {
+            handleClick={() => {
               if (editorType == "mdx") {
                 setEditorType("preview");
               } else if (editorType == "preview") {
@@ -36,7 +36,7 @@ const Bottom = memo(({ showCountChars }: { showCountChars: boolean }) => {
           </IconBtn>
         )}
 
-        <IconBtn type="submit">
+        <IconBtn handleClick={() => {}} type="submit">
           <Send size={19} />
         </IconBtn>
       </div>

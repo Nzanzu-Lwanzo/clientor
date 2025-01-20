@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useClientorContext } from "../../../lib/context";
-import type { TextareaPropsType } from "../../ClientorBox";
+import { TextareaPropsType } from "../../../lib/types";
 
 const Textarea = ({ maxContentLength }: TextareaPropsType) => {
   const { setRawText, rawText, setHtmlText, textAreaDivRef, editorType } =
@@ -27,6 +27,7 @@ const Textarea = ({ maxContentLength }: TextareaPropsType) => {
         onInput={handleTyping}
         ref={textAreaDivRef}
         autoFocus
+        aria-placeholder="Write your text here ..."
       ></div>
     </div>
   );

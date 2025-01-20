@@ -59,3 +59,5 @@ All the codes lives inside of the src folder which contains three subfolders.
 - [ ] Style the elements inside of the previewer box (see #content div element) so they look good (tables, lists, anchor tags, images, ...)
 - [ ] Implement the Rich Text editing functionnality (bold, italic and underline to start)
 - [x] Add a button to directly delete everything we have written
+
+- Extract top buttons in separate components

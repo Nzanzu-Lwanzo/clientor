@@ -6,7 +6,14 @@ import React, {
   useState,
 } from "react";
 
-export type EditMode = "bold" | "italic" | "underline" | "none";
+export type EditMode =
+  | "bold"
+  | "italic"
+  | "underline"
+  | "$ins_img"
+  | "$ins_link"
+  | "$reference"
+  | "none";
 
 export type EditorType = "rtx" | "mdx" | "preview";
 
@@ -41,7 +48,7 @@ export const ClientorContextProvider = ({
   const [rawText, setRawText] = useState("");
   const [htmlText, setHtmlText] = useState("");
   const [editModes, setEditMode] = useState<EditMode[]>(["none"]);
-  const [editorType, setEditorType] = useState<EditorType>("rtx");
+  const [editorType, setEditorType] = useState<EditorType>("mdx");
   const textAreaDivRef = useRef<HTMLDivElement | null>(null);
   const previewDivRef = useRef<HTMLDivElement | null>(null);
 
