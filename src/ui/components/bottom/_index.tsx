@@ -4,44 +4,52 @@ import SwitchMDXRichText from "./SwitchMDXRichText";
 import { useClientorContext } from "../../../lib/context";
 import { memo } from "react";
 
-const Bottom = memo(({ showCountChars }: { showCountChars: boolean }) => {
-  const { rawText, editorType, setEditorType } = useClientorContext();
+const Bottom = memo(
+  ({
+    showCountChars,
+    handler,
+  }: {
+    showCountChars: boolean;
+    handler: () => void;
+  }) => {
+    const { rawText, editorType, setEditorType } = useClientorContext();
 
-  return (
-    <div className="clientor-bottom">
-      <div className="settings">
-        {showCountChars && (
-          <span className="count-chars">{rawText.length} chars</span>
-        )}
-        <SwitchMDXRichText />
-      </div>
+    return (
+      <div className="clientor-bottom">
+        <div className="settings">
+          {showCountChars && (
+            <span className="count-chars">{rawText.length} chars</span>
+          )}
+          <SwitchMDXRichText />
+        </div>
 
-      <div className="actions">
-        {["mdx", "preview"].includes(editorType) && (
-          <IconBtn
-            type="button"
-            handleClick={() => {
-              if (editorType == "mdx") {
-                setEditorType("preview");
-              } else if (editorType == "preview") {
-                setEditorType("mdx");
-              }
-            }}
-          >
-            {editorType === "mdx" ? (
-              <Newspaper size={19} />
-            ) : editorType === "preview" ? (
-              <NotebookPen size={19} />
-            ) : undefined}
+        <div className="actions">
+          {["mdx", "preview"].includes(editorType) && (
+            <IconBtn
+              type="button"
+              handleClick={() => {
+                if (editorType == "mdx") {
+                  setEditorType("preview");
+                } else if (editorType == "preview") {
+                  setEditorType("mdx");
+                }
+              }}
+            >
+              {editorType === "mdx" ? (
+                <Newspaper size={19} />
+              ) : editorType === "preview" ? (
+                <NotebookPen size={19} />
+              ) : undefined}
+            </IconBtn>
+          )}
+
+          <IconBtn handleClick={handler}>
+            <Send size={19} />
           </IconBtn>
-        )}
-
-        <IconBtn handleClick={() => {}} type="submit">
-          <Send size={19} />
-        </IconBtn>
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 export default Bottom;

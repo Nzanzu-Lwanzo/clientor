@@ -8,11 +8,9 @@ import { useHandleSubmission } from "../lib/hooks";
 import { ClientorBoxProps } from "../lib/types";
 import { CSSProperties } from "react";
 
-
 const defaulyBoxStyles: CSSProperties = {
   // maxHeight: "350px",
 };
-
 
 const ClientorBox = ({
   handleSubmit,
@@ -31,9 +29,8 @@ const ClientorBox = ({
 
   return (
     <>
-      <form
+      <div
         id="clientor-main-container"
-        onSubmit={handler}
         style={{ ...defaulyBoxStyles, ...boxStyle }}
       >
         <Top />
@@ -43,8 +40,9 @@ const ClientorBox = ({
           showCountChars={
             showCountChars ?? ClientorDefaultConfiguration.showCountChars
           }
+          handler={handler}
         />
-      </form>
+      </div>
     </>
   );
 };

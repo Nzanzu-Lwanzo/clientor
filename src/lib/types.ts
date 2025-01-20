@@ -18,8 +18,7 @@ interface TextReturnType {
 
 export interface ClientorBoxProps extends TextareaPropsType, BottomPropsType {
   handleSubmit: (
-    text: TextReturnType,
-    event: React.FormEvent<HTMLFormElement>
+    text: TextReturnType
   ) => boolean;
   boxStyle?: CSSProperties;
   minContentLength?: {

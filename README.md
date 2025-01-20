@@ -54,10 +54,6 @@ All the codes lives inside of the src folder which contains three subfolders.
 
    This is the folder where live the components and only the components. The main component exposed by the package lives in this file : [ClientorBox.tsx](src/ui/ClientorBox.tsx)
 
-# TODO
-
-- [ ] Style the elements inside of the previewer box (see #content div element) so they look good (tables, lists, anchor tags, images, ...)
-- [ ] Implement the Rich Text editing functionnality (bold, italic and underline to start)
-- [x] Add a button to directly delete everything we have written
-
-- Extract top buttons in separate components
+4. ### useFunctionalities
+   
+   This is **one** of the core files of the package. It exposes a unique [hook](src/lib/useFunctionalities.ts) that handles all the functionalities of the component from toggling the visibility of the buttons to inserting or formatting. That's the place to define the behavior of the different features of the component.

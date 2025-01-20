@@ -6,6 +6,8 @@ type ButtonProps = ButtonHTMLAttributes<HTMLDivElement> & {
   handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
+const potentialNodeNamesToBeTarget = ["path", "circle", "svg", "rect"];
+
 const IconBtn: React.FC<ButtonProps> = ({
   children,
   editMode,
@@ -20,7 +22,17 @@ const IconBtn: React.FC<ButtonProps> = ({
         className={`icon-btn center ${
           editMode && editModes.includes(editMode) ? "active" : undefined
         }`}
-        onClick={handleClick}
+        onClick={(e) => {
+          let target = e.target as HTMLElement;
+          // let currentTarget = e.currentTarget;
+
+          if (
+            potentialNodeNamesToBeTarget.includes(target.nodeName) ||
+            target.classList.contains("icon-btn")
+          ) {
+            handleClick(e);
+          }
+        }}
       >
         {children}
       </div>

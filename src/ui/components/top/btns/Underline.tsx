@@ -1,24 +1,12 @@
-import { useClientorContext } from "../../../../lib/context";
+import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Underline as UnderlineIcon } from "lucide-react";
 
 const Underline = () => {
-  const { setEditMode } = useClientorContext();
+  const { underline } = useFunctionalities();
 
   return (
-    <IconBtn
-      handleClick={() =>
-        setEditMode((prevModes) => {
-          if (prevModes.includes("underline")) {
-            return prevModes.filter((mode) => mode !== "underline");
-          } else {
-            return [...prevModes, "underline"];
-          }
-        })
-      }
-      editMode="underline"
-      type="button"
-    >
+    <IconBtn handleClick={underline} editMode="underline" type="button">
       <UnderlineIcon size={19} />
     </IconBtn>
   );

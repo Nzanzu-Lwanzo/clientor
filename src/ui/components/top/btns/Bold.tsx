@@ -1,24 +1,12 @@
-import { useClientorContext } from "../../../../lib/context";
+import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Bold as BoldIcon } from "lucide-react";
 
 const Bold = () => {
-  const { setEditMode } = useClientorContext();
+  const { bold } = useFunctionalities();
 
   return (
-    <IconBtn
-      handleClick={() =>
-        setEditMode((prevModes) => {
-          if (prevModes.includes("bold")) {
-            return prevModes.filter((mode) => mode !== "bold");
-          } else {
-            return [...prevModes, "bold"];
-          }
-        })
-      }
-      editMode="bold"
-      type="button"
-    >
+    <IconBtn handleClick={bold} editMode="bold" type="button">
       <BoldIcon size={19} />
     </IconBtn>
   );

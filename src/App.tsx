@@ -6,6 +6,7 @@ function App() {
     <ClientorContextProvider>
       <ClientorBox
         handleSubmit={(text) => {
+          console.log(text);
           return text.raw !== "" && text.raw.length > 0;
         }}
         maxContentLength={{

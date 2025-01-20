@@ -2,12 +2,13 @@ import { memo } from "react";
 import { useClientorContext } from "../../../lib/context";
 
 const SwitchMDXRichText = memo(() => {
-  const { editorType, setEditorType } = useClientorContext();
+  const { editorType, setEditorType, rawText } = useClientorContext();
 
   return (
     <button
       type="button"
       className="square-btn"
+      disabled={rawText.trim() !== ""}
       onClick={() => {
         if (["mdx", "preview"].includes(editorType)) {
           setEditorType("rtx");

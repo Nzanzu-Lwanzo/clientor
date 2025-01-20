@@ -1,16 +1,12 @@
-import { useShowOneMenuAtATime } from "../../../../lib/hooks";
+import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Image } from "lucide-react";
 
 const InsertImage = () => {
-  const toggler = useShowOneMenuAtATime();
+  const { insertImage: toggler } = useFunctionalities();
 
   return (
-    <IconBtn
-      type="button"
-      handleClick={() => toggler("$ins_img")}
-      editMode="$ins_img"
-    >
+    <IconBtn type="button" handleClick={toggler} editMode="$ins_img">
       <Image size={19} />
       <div className="floating"></div>
     </IconBtn>

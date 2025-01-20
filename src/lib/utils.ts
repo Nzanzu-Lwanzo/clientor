@@ -1,3 +1,4 @@
+import { LinkDataType } from "./useFunctionalities";
 export const debouncer = (fn: (args: any) => void, delay: number) => {
   let timer: number;
 
@@ -20,5 +21,19 @@ export const throttler = (fn: (args: any) => void, delay: number) => {
         timer = null;
       }, delay * 1000);
     }
+  };
+};
+
+export const formatLink = (linkData: LinkDataType) => {
+  return {
+    mdx: `[${linkData.label || linkData.link}](${linkData.link})`,
+    rtx: () => {
+      let attributes = `href="${linkData.link}"`;
+      if (linkData.target) {
+        attributes += ` target="_${linkData.target}"`;
+      }
+      let linkText = `<a ${attributes}>${linkData.label || linkData.link}</a>`;
+      return linkText;
+    },
   };
 };

@@ -1,21 +1,12 @@
-import { useClientorContext } from "../../../../lib/context";
+import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Delete } from "lucide-react";
 
 const DeleteAll = () => {
-  const { textAreaDivRef, setHtmlText, setRawText } = useClientorContext();
+  const { deleteAll } = useFunctionalities();
 
   return (
-    <IconBtn
-      handleClick={() => {
-        if (textAreaDivRef.current) {
-          textAreaDivRef.current.innerHTML = "";
-          setHtmlText("");
-          setRawText("");
-        }
-      }}
-      type="button"
-    >
+    <IconBtn handleClick={deleteAll} type="button">
       <Delete size={19} />
     </IconBtn>
   );

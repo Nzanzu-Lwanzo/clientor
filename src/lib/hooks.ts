@@ -26,25 +26,18 @@ export const useHandleSubmission = ({
   } = useClientorContext();
 
   return {
-    handler: (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-
+    handler: () => {
       if (minContentLength && rawText.length <= minContentLength.value) {
         minContentLength.handler();
       }
 
       // This is so we can make decisions and perform actions
       // based on wether the message was successfully successfullyHandled or whatever
-      let successfullyHandled = handleSubmit(
-        {
-          html:
-            editorType !== "rtx"
-              ? (marked.parse(htmlText) as string)
-              : htmlText,
-          raw: rawText,
-        },
-        event
-      );
+      let successfullyHandled = handleSubmit({
+        html:
+          editorType !== "rtx" ? (marked.parse(htmlText) as string) : htmlText,
+        raw: rawText,
+      });
 
       if (successfullyHandled) {
         // Play sound on send
