@@ -1,4 +1,4 @@
-import { useClientorContext } from "../../../lib/context";
+import { useClientorContext } from "../../../lib/contexts/clientorContext";
 import { marked } from "marked";
 
 const Preview = () => {

@@ -5,6 +5,7 @@
     --accent: #1e90ff;
     --text-color: #fff;
     --standout: grey;
+    --accent-shade : #4ba6ff;
   }
 
   .square-btn {
@@ -78,10 +79,8 @@
   cursor: pointer;
   background-color: transparent;
 
-  &.active {
-    svg {
-      stroke: var(--accent);
-    }
+  &.active > svg {
+    stroke: var(--accent);
   }
 
   &.active,
@@ -128,13 +127,38 @@
     color: var(--text-color);
     cursor: pointer;
   }
+
+  .btn:disabled {
+    background-color: var(--accent-shade);
+  }
 }
 
 .icon-btn.active .floating {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 0.5rem;
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .span-btn {
+    height: 30px;
+    width: 30px;
+    border-radius: 70%;
+    background-color: var(--box-bg);
+
+    &.active {
+      background-color: black;
+      svg {
+        stroke: var(--accent);
+      }
+    }
+  }
 
   .contains-input {
     display: flex;
@@ -151,23 +175,63 @@
       width: 100%;
     }
   }
+
+  .img-infos-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
+
+  .image-picker-box {
+    padding: 1rem;
+    border: 1px dashed var(--standout);
+    text-align: center;
+    color: var(--standout);
+  }
+
+  .preview-imgs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    padding-block: 0.3rem;
+
+    .img {
+      height: 30px;
+      width: 30px;
+      border-radius: 2px;
+      overflow: hidden;
+      background-color: var(--standout);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
 }
 
 #clientor-main-container,
 .preview {
   width: 600px;
   background-color: var(--box-bg);
-  overflow: hidden;
+  /* overflow-y: hidden; */
+}
+
+#clientor-main-container:has(.icon-btn.active.with-floating) {
+  min-height: 400px;
 }
 
 #clientor-main-container {
-  min-height: 400px; /* should be 200px */
+  min-height: 200px; /* should be 200px */
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 0;
   justify-content: center;
   border-radius: 3px;
+  transition: .1s ease-out;
 }
 
 #clientor-main-container .clientor-top,
@@ -385,7 +449,8 @@
 
   .icon-btn-container .floating {
     left: 0;
-    width: 160px;
+    min-width: 0;
+    width: 200px;
     &::after {
       left: 0.5rem;
     }

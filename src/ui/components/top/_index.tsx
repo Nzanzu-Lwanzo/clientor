@@ -1,5 +1,5 @@
 import { useState, memo } from "react";
-import { useClientorContext } from "../../../lib/context";
+import { useClientorContext } from "../../../lib/contexts/clientorContext";
 import Headings from "./btns/Headings";
 import Bold from "./btns/Bold";
 import Italic from "./btns/Italic";
@@ -8,13 +8,13 @@ import RemoveFormatting from "./btns/RemoveFormatting";
 import InsertLink from "./btns/InsertLink";
 import AtTag from "./btns/AtTag";
 import InsertImage from "./btns/InsertImage";
-import SwitchLightDark from "./btns/SwitchLightDark";
+// import SwitchLightDark from "./btns/SwitchLightDark";
 import DeleteAll from "./btns/DeleteAll";
 import SwitchMenus from "./btns/SwitchMenus";
 
 const Top = memo(() => {
   const [menuSwitched, setMenuSwitched] = useState(false);
-  const { editorType } = useClientorContext();
+  const { editorType, setEditMode } = useClientorContext();
 
   return (
     <div className="clientor-top">
@@ -35,11 +35,11 @@ const Top = memo(() => {
         )}
 
         <div className={`switched-menu ${menuSwitched ? "show" : "hide"}`}>
-          <RemoveFormatting />
           <InsertLink />
           <AtTag />
           <InsertImage />
-          <SwitchLightDark />
+          {/* <SwitchLightDark /> */}
+          <RemoveFormatting />
           <DeleteAll />
         </div>
       </div>
@@ -47,7 +47,18 @@ const Top = memo(() => {
         <>
           <div className="actions">
             <SwitchMenus
-              onClick={() => setMenuSwitched((prev) => !prev)}
+              onClick={() => {
+                setMenuSwitched((prev) => !prev);
+                setEditMode((prevModes) => {
+                  // On switch menus (640px breakpoint)
+                  // remove the insertions editModes
+                  // which means if the user was trying to insert a link
+                  // and then switched to the style menu,
+                  // when they goes back to the insert menu
+                  // there will be no floating menu active
+                  return prevModes.filter((mode) => !mode.startsWith("$"));
+                });
+              }}
               menuSwitched={menuSwitched}
             />
           </div>

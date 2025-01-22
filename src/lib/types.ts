@@ -1,33 +1,20 @@
-import { CSSProperties } from "react";
+import { LocalImageType, RemoteImageType } from "./contexts/clientorContext";
 
-export interface TextareaPropsType {
-  maxContentLength?: {
-    value: number;
-    handler: () => void;
-  };
-}
-
-export interface BottomPropsType {
-  showCountChars?: boolean;
-}
-
-interface TextReturnType {
+export interface ClientorBoxReturnType {
   raw: string;
   html: string;
+  localImages: LocalImageType["file"][];
+  remoteImages: RemoteImageType["url"][];
 }
 
-export interface ClientorBoxProps extends TextareaPropsType, BottomPropsType {
-  handleSubmit: (
-    text: TextReturnType
-  ) => boolean;
-  boxStyle?: CSSProperties;
-  minContentLength?: {
-    value: number;
-    handler: () => void;
-  };
-  playSounds?: {
-    onSend?: boolean | HTMLAudioElement;
-    onDelete?: boolean | HTMLAudioElement;
-    onError?: boolean | HTMLAudioElement;
-  };
-}
+export const isLocalImage = (
+  image: LocalImageType | RemoteImageType
+): image is LocalImageType => {
+  return Object.keys(image).includes("file");
+};
+
+export const isRemoteImage = (
+  image: LocalImageType | RemoteImageType
+): image is RemoteImageType => {
+  return Object.keys(image).includes("url");
+};

@@ -1,5 +1,8 @@
 import React, { ButtonHTMLAttributes } from "react";
-import { EditMode, useClientorContext } from "../../../lib/context";
+import {
+  EditMode,
+  useClientorContext,
+} from "../../../lib/contexts/clientorContext";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLDivElement> & {
   editMode?: EditMode;
@@ -16,18 +19,25 @@ const IconBtn: React.FC<ButtonProps> = ({
 }: ButtonProps) => {
   const { editModes } = useClientorContext();
 
+  let thisButtonIsActive = editMode && editModes.includes(editMode);
+  let thisButtonShowAFloating = ["$ins_img", "$ins_link", "$reference"].some(
+    (mode) => editModes.includes(mode as EditMode)
+  );
+
   return (
     <div className="icon-btn-container" {...props}>
       <div
-        className={`icon-btn center ${
-          editMode && editModes.includes(editMode) ? "active" : undefined
-        }`}
+        className={`
+          icon-btn center
+          ${thisButtonIsActive ? "active" : undefined}
+          ${thisButtonShowAFloating ? "with-floating" : undefined}
+        `}
         onClick={(e) => {
           let target = e.target as HTMLElement;
-          // let currentTarget = e.currentTarget;
 
           if (
-            potentialNodeNamesToBeTarget.includes(target.nodeName) ||
+            (potentialNodeNamesToBeTarget.includes(target.nodeName) &&
+              !target.matches(".span-btn *")) ||
             target.classList.contains("icon-btn")
           ) {
             handleClick(e);

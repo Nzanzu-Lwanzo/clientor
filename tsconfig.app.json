@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2020",
+    "target": "es2022", // Change this from ES2020 to es2022 , to support later Array methods
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["es2022", "DOM", "DOM.Iterable"], // Change lib[0] from ES2020 to es2022 , to support later Array methods
     "module": "ESNext",
     "skipLibCheck": true,
 

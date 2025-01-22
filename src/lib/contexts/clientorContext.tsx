@@ -17,6 +17,16 @@ export type EditMode =
 
 export type EditorType = "rtx" | "mdx" | "preview";
 
+export type LocalImageType = {
+  file: File;
+  id: string;
+};
+
+export type RemoteImageType = {
+  url: string;
+  id: string;
+};
+
 interface ClientorContexttype {
   rawText: string;
   setRawText: React.Dispatch<React.SetStateAction<string>>;
@@ -32,6 +42,12 @@ interface ClientorContexttype {
 
   textAreaDivRef: React.MutableRefObject<HTMLDivElement | null>;
   previewDivRef: React.MutableRefObject<HTMLDivElement | null>;
+
+  localImages: LocalImageType[];
+  setLocalImages: React.Dispatch<React.SetStateAction<LocalImageType[]>>;
+
+  remoteImages: RemoteImageType[];
+  setRemoteImages: React.Dispatch<React.SetStateAction<RemoteImageType[]>>;
 }
 
 const ClientorContext = createContext<ClientorContexttype | null>(null);
@@ -48,7 +64,9 @@ export const ClientorContextProvider = ({
   const [rawText, setRawText] = useState("");
   const [htmlText, setHtmlText] = useState("");
   const [editModes, setEditMode] = useState<EditMode[]>(["none"]);
-  const [editorType, setEditorType] = useState<EditorType>("mdx");
+  const [editorType, setEditorType] = useState<EditorType>("rtx");
+  const [localImages, setLocalImages] = useState<LocalImageType[]>([]);
+  const [remoteImages, setRemoteImages] = useState<RemoteImageType[]>([]);
   const textAreaDivRef = useRef<HTMLDivElement | null>(null);
   const previewDivRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,6 +81,10 @@ export const ClientorContextProvider = ({
     setEditorType,
     textAreaDivRef,
     previewDivRef,
+    localImages,
+    setLocalImages,
+    remoteImages,
+    setRemoteImages,
   };
 
   useEffect(() => {

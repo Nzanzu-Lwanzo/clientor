@@ -1,5 +1,5 @@
-import { useClientorContext } from "./context";
-import { formatLink } from "./utils";
+import { useClientorContext } from "./contexts/clientorContext";
+import { formatImage, formatLink } from "./utils";
 
 // event: React.MouseEvent<HTMLDivElement, MouseEvent>
 
@@ -10,8 +10,15 @@ export interface LinkDataType {
 }
 
 export default function useFunctionalities() {
-  const { setEditMode, textAreaDivRef, setHtmlText, setRawText, editorType } =
-    useClientorContext();
+  const {
+    setEditMode,
+    textAreaDivRef,
+    setHtmlText,
+    setRawText,
+    editorType,
+    localImages,
+    remoteImages,
+  } = useClientorContext();
 
   return {
     // FUNCTIONALITY ****************************************************************
@@ -72,6 +79,7 @@ export default function useFunctionalities() {
         });
       },
 
+      // This function is the one being called when the user clicks on insert button
       dataHandler: (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -109,24 +117,69 @@ export default function useFunctionalities() {
           }
         }
 
+        // Hide the floating card
         setEditMode((prevModes) =>
           prevModes.filter((_mode) => _mode !== "$ins_link")
         );
+
+        // Delete all the informations entered
+        event.currentTarget.reset();
       },
     },
 
     // FUNCTIONALITY ****************************************************************
-    insertImage: () => {
-      setEditMode((prevModes) => {
-        if (prevModes.includes("$ins_img")) {
-          return prevModes.filter((_mode) => _mode !== "$ins_img");
-        } else {
-          return [
-            ...prevModes.filter((_mode) => !_mode.startsWith("$")),
-            "$ins_img",
-          ];
+    insertImage: {
+      toggler: () => {
+        setEditMode((prevModes) => {
+          if (prevModes.includes("$ins_img")) {
+            return prevModes.filter((_mode) => _mode !== "$ins_img");
+          } else {
+            return [
+              ...prevModes.filter((_mode) => !_mode.startsWith("$")),
+              "$ins_img",
+            ];
+          }
+        });
+      },
+
+      // This function is the one being called when the user clicks on insert button
+      dataHandler: (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (localImages.length === 0 && remoteImages.length === 0) return;
+
+        const textarea = textAreaDivRef.current;
+
+        if (!textarea) return;
+
+        const imagesEltString = [...localImages, ...remoteImages]
+          .map((image) => {
+            const imgElet = formatImage(image);
+            return editorType === "rtx" ? imgElet.rtx() : imgElet.mdx;
+          })
+          .join(" ");
+
+        textarea.innerHTML += " ".concat(imagesEltString, "<br/>");
+
+        switch (editorType) {
+          case "mdx": {
+            setRawText((prevText) => `${prevText} ${imagesEltString}`);
+            break;
+          }
+
+          case "rtx": {
+            setHtmlText((prevText) => `${prevText} ${imagesEltString}`);
+            break;
+          }
         }
-      });
+
+        // Hide the floating card
+        setEditMode((prevModes) =>
+          prevModes.filter((_mode) => _mode !== "$ins_img")
+        );
+
+        event.currentTarget.reset();
+      },
     },
 
     // FUNCTIONALITY ****************************************************************

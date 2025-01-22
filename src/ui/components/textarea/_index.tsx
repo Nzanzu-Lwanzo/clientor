@@ -1,10 +1,19 @@
-import { useCallback } from "react";
-import { useClientorContext } from "../../../lib/context";
-import { TextareaPropsType } from "../../../lib/types";
+import { useCallback, useEffect, useTransition } from "react";
+import { useClientorContext } from "../../../lib/contexts/clientorContext";
+import { useClientorUserContext } from "../../../lib/contexts/clientorUserContext";
 
-const Textarea = ({ maxContentLength }: TextareaPropsType) => {
-  const { setRawText, rawText, setHtmlText, textAreaDivRef, editorType } =
-    useClientorContext();
+const Textarea = () => {
+  const { maxContentLength } = useClientorUserContext();
+
+  const {
+    setRawText,
+    rawText,
+    setHtmlText,
+    textAreaDivRef,
+    editorType,
+    setLocalImages,
+    setRemoteImages,
+  } = useClientorContext();
 
   const handleTyping = useCallback((event: React.FormEvent<HTMLDivElement>) => {
     setRawText(event.currentTarget.innerText);
@@ -16,6 +25,48 @@ const Textarea = ({ maxContentLength }: TextareaPropsType) => {
     }
   }, []);
 
+  // Delete inserted images by double clicking on them
+  const [deleteImageTransition, setDeleteImageTransition] = useTransition();
+  useEffect(() => {
+    const textarea = textAreaDivRef.current;
+
+    if (textarea) {
+      textarea.addEventListener("dblclick", function (event) {
+        const element = event.target as HTMLElement;
+        const elementStr = element.outerHTML; // .replaceAll(`"`, `\"`)
+        if (element.matches("img")) {
+          let classname = element.className;
+          let id = classname.split("-").at(-1);
+
+          setDeleteImageTransition(() => {
+            // Check first in local images
+            // because the user is more likely to want to remove locally selected images
+            setLocalImages((prevImages) => {
+              return prevImages.filter((image) => image.id != id);
+            });
+
+            // Then check in the remote images
+            setRemoteImages((prevImages) => {
+              return prevImages.filter((image) => image.id != id);
+            });
+          });
+
+          // Once the image deleted, we should remove it
+          // 1. From the DOM
+          element.remove();
+          // 2. From the state strings - Only the htmlText state
+          // because that's the one we use to display images
+          // in rtx. To delete an image in mdx, the user just has
+          // to remove the string from their markdown
+          setHtmlText((prevText) => {
+            // Remove the elementStr from prevText
+            return prevText.replaceAll(elementStr, "");
+          });
+        }
+      });
+    }
+  }, []);
+
   return (
     <div
       id="textarea"
@@ -23,7 +74,7 @@ const Textarea = ({ maxContentLength }: TextareaPropsType) => {
     >
       <div
         id="text"
-        contentEditable
+        contentEditable={!deleteImageTransition}
         onInput={handleTyping}
         ref={textAreaDivRef}
         autoFocus

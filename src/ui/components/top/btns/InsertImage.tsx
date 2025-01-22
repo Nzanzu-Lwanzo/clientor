@@ -1,14 +1,46 @@
+import { useState } from "react";
 import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Image } from "lucide-react";
+import { Cloud, Computer } from "lucide-react";
+import RemoteImage from "./ImagePicker/Remote";
+import LocalImage from "./ImagePicker/Local";
 
 const InsertImage = () => {
-  const { insertImage: toggler } = useFunctionalities();
+  const {
+    insertImage: { toggler, dataHandler },
+  } = useFunctionalities();
+
+  const [imgLocation, setImgLocation] = useState<"cloud" | "local">("local");
 
   return (
     <IconBtn type="button" handleClick={toggler} editMode="$ins_img">
       <Image size={19} />
-      <div className="floating"></div>
+      <form className="floating" onSubmit={dataHandler}>
+        <div className="top-bar">
+          <span
+            className={`center span-btn ${
+              imgLocation === "cloud" ? "active" : undefined
+            }`}
+            onClick={() => setImgLocation("cloud")}
+          >
+            <Cloud size={17} />
+          </span>
+          <span
+            className={`center span-btn ${
+              imgLocation === "local" ? "active" : undefined
+            }`}
+            onClick={() => setImgLocation("local")}
+          >
+            <Computer size={17} />
+          </span>
+        </div>
+
+        <div className="img-infos-container">
+          {imgLocation == "cloud" ? <RemoteImage /> : <LocalImage />}
+          <button className="btn" type="submit">Insert</button>
+        </div>
+      </form>
     </IconBtn>
   );
 };
