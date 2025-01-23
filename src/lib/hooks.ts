@@ -6,6 +6,8 @@ import { useClientorUserContext } from "./contexts/clientorUserContext";
 import { ClientorUserContextType } from "./contexts/clientorUserContext";
 import ClientorDefaultConfiguration from "../clientor.config";
 import { bytesToMB } from "./helpers";
+import connectDB from "./storage/idb";
+import { useEffect } from "react";
 
 interface HookParamsType {
   handleSubmit: ClientorUserContextType["handleSubmit"];
@@ -183,3 +185,93 @@ export const useValidateImage = () => {
   };
 };
 
+export const useStorage = ({
+  handleIdbNotSupported,
+  handleError,
+}: {
+  handleIdbNotSupported: () => void;
+  handleError: () => void;
+}) => {
+  const { setIdb, localImages, remoteImages, idb } = useClientorContext();
+
+  useEffect(() => {
+    connectDB()
+      .then((result) => {
+        if (result === "NOT_SUPPORTED") {
+          handleIdbNotSupported();
+          return;
+        }
+
+        if (result === "ERROR") {
+          if (handleError) {
+            handleError();
+          }
+          return;
+        }
+
+        setIdb(result);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  return {
+    storeImage: () => {
+      if (idb) {
+        const transaction = idb.transaction(
+          ["clientor_images_local", "clientor_images_remote"],
+          "readwrite"
+        );
+
+        // STORE LOCAL IMAGES
+        for (let image of localImages) {
+          transaction.objectStore("clientor_images_local").put(image);
+        }
+
+        // STORE REMOTE IMAGES
+        for (let image of remoteImages) {
+          transaction.objectStore("clientor_images_remote").put(image);
+        }
+      }
+    },
+
+    emptyStore: () => {
+      if (idb) {
+        const transaction = idb.transaction(
+          ["clientor_images_local", "clientor_images_remote"],
+          "readwrite"
+        );
+        transaction.objectStore("clientor_images_local").clear();
+        transaction.objectStore("clientor_images_remote").clear();
+      }
+    },
+
+    deleteImageFronStore: ({
+      id,
+      store,
+    }: {
+      id: string;
+      store: "local" | "remote";
+    }) => {
+      if (idb) {
+        const transaction = idb.transaction(
+          ["clientor_images_local", "clientor_images_remote"],
+          "readwrite"
+        );
+
+        switch (store) {
+          case "local": {
+            transaction.objectStore("clientor_images_local").delete(id);
+            break;
+          }
+
+          case "remote": {
+            transaction.objectStore("clientor_images_remote").delete(id);
+            break;
+          }
+        }
+      }
+    },
+  };
+};

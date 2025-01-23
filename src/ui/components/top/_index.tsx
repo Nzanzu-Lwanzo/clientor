@@ -13,6 +13,8 @@ import DeleteAll from "./btns/DeleteAll";
 import SwitchMenus from "./btns/SwitchMenus";
 
 const Top = memo(() => {
+
+  // STATES
   const [menuSwitched, setMenuSwitched] = useState(false);
   const { editorType, setEditMode } = useClientorContext();
 

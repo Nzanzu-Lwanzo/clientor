@@ -1,4 +1,5 @@
 import { useClientorContext } from "./contexts/clientorContext";
+import { useStorage } from "./hooks";
 import { formatImage, formatLink } from "./utils";
 
 // event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -18,7 +19,19 @@ export default function useFunctionalities() {
     editorType,
     localImages,
     remoteImages,
+    setLocalImages,
+    setRemoteImages,
   } = useClientorContext();
+
+  const { storeImage } = useStorage({
+    handleError() {
+      console.log("error");
+    },
+
+    handleIdbNotSupported() {
+      console.log("Not supported");
+    },
+  });
 
   return {
     // FUNCTIONALITY ****************************************************************
@@ -177,6 +190,14 @@ export default function useFunctionalities() {
         setEditMode((prevModes) =>
           prevModes.filter((_mode) => _mode !== "$ins_img")
         );
+
+        // TEMPORARILY STORE THE IMAGES
+        storeImage();
+
+        // Empty the states so we don't displayed images
+        // more than once
+        setLocalImages([]);
+        setRemoteImages([]);
 
         event.currentTarget.reset();
       },

@@ -3,6 +3,7 @@ import IconBtn from "../../_general/IconBtn";
 import { Bold as BoldIcon } from "lucide-react";
 
 const Bold = () => {
+  // CH
   const { bold } = useFunctionalities();
 
   return (

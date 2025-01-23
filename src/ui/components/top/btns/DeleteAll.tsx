@@ -3,6 +3,7 @@ import IconBtn from "../../_general/IconBtn";
 import { Delete } from "lucide-react";
 
 const DeleteAll = () => {
+  // CH
   const { deleteAll } = useFunctionalities();
 
   return (

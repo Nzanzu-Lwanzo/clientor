@@ -17,8 +17,10 @@ const IconBtn: React.FC<ButtonProps> = ({
   handleClick,
   ...props
 }: ButtonProps) => {
+  // STATES
   const { editModes } = useClientorContext();
 
+  // IVS
   let thisButtonIsActive = editMode && editModes.includes(editMode);
   let thisButtonShowAFloating = ["$ins_img", "$ins_link", "$reference"].some(
     (mode) => editModes.includes(mode as EditMode)

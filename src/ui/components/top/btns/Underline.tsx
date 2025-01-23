@@ -3,6 +3,7 @@ import IconBtn from "../../_general/IconBtn";
 import { Underline as UnderlineIcon } from "lucide-react";
 
 const Underline = () => {
+  // CH
   const { underline } = useFunctionalities();
 
   return (

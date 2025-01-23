@@ -5,7 +5,6 @@ import { nanoid } from "nanoid";
 import { useValidateImage } from "../../../../../lib/hooks";
 import { useClientorUserContext } from "../../../../../lib/contexts/clientorUserContext";
 import ClientorDefaultConfiguration from "../../../../../clientor.config";
-import { bytesToMB } from "../../../../../lib/helpers";
 
 const LocalImagePreviewer = ({
   image,
@@ -14,8 +13,10 @@ const LocalImagePreviewer = ({
   image: LocalImageType;
   deleteImage: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }) => {
+  // STATES
   const [url, setUrl] = useState<string | null>(null);
 
+  // EFFECTS
   useEffect(() => {
     if (typeof image.file === "string") {
       setUrl(image.file);
@@ -43,14 +44,12 @@ const LocalImagePreviewer = ({
 };
 
 const LocalImage = () => {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const fileBtnRef = useRef<HTMLSpanElement | null>(null);
+  // STATES
   const { setLocalImages: setImages, localImages: images } =
     useClientorContext();
-
-  // Image validation
-  const validateImage = useValidateImage();
   const imagesValidate = useClientorUserContext().imagesValidate;
+
+  // RH
   const { max } = useMemo(() => {
     return Object.assign(
       imagesValidate || {},
@@ -58,6 +57,14 @@ const LocalImage = () => {
     );
   }, []);
 
+  // CH
+  const validateImage = useValidateImage(); // Image validation
+
+  // REFS
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileBtnRef = useRef<HTMLSpanElement | null>(null);
+
+  // EFFECTS
   useEffect(() => {
     const fileInput = fileInputRef.current;
     const fileBtn = fileBtnRef.current;
@@ -78,10 +85,6 @@ const LocalImage = () => {
           Array.from(files)
             // Validate first the images before adding them to the state
             .filter((image) => {
-              console.log({
-                size: bytesToMB(image.size),
-                name: image.name,
-              });
               return validateImage(image).verdict;
             })
             // Only take the first images according to the max images option

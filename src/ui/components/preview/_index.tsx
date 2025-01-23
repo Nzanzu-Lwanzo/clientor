@@ -2,7 +2,10 @@ import { useClientorContext } from "../../../lib/contexts/clientorContext";
 import { marked } from "marked";
 
 const Preview = () => {
+  // STATES
   const { previewDivRef, rawText, editorType } = useClientorContext();
+
+  // IVS
   const parsedMarkdown = marked.parse(rawText);
 
   return (

@@ -11,6 +11,7 @@ const defaulyBoxStyles: CSSProperties = {
 };
 
 const ClientorBox = () => {
+  // STATES
   const { boxStyle } = useClientorUserContext();
 
   return (

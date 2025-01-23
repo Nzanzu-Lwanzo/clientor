@@ -2,6 +2,7 @@ import { memo } from "react";
 import { useClientorContext } from "../../../lib/contexts/clientorContext";
 
 const SwitchMDXRichText = memo(() => {
+  // STATES
   const { editorType, setEditorType, rawText } = useClientorContext();
 
   return (

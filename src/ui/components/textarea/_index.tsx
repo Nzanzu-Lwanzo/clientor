@@ -15,6 +15,10 @@ const Textarea = () => {
     setRemoteImages,
   } = useClientorContext();
 
+  // RH
+  const [deleteImageTransition, setDeleteImageTransition] = useTransition();
+
+  // FEH
   const handleTyping = useCallback((event: React.FormEvent<HTMLDivElement>) => {
     setRawText(event.currentTarget.innerText);
     let innerHTML = event.currentTarget.innerHTML;
@@ -25,9 +29,11 @@ const Textarea = () => {
     }
   }, []);
 
-  // Delete inserted images by double clicking on them
-  const [deleteImageTransition, setDeleteImageTransition] = useTransition();
+  // EFFECTS
   useEffect(() => {
+    // Delete inserted images by double clicking on them
+    // DELETE FROM IDB DATABASE TOO
+
     const textarea = textAreaDivRef.current;
 
     if (textarea) {

@@ -8,8 +8,11 @@ import ClientorDefaultConfiguration from "../../../clientor.config";
 import { useHandleSubmission } from "../../../lib/hooks";
 
 const Bottom = memo(() => {
+  // STATES
   const { rawText, editorType, setEditorType } = useClientorContext();
   const { showCountChars, handleSubmit } = useClientorUserContext();
+
+  // CH
   const { handler } = useHandleSubmission({ handleSubmit });
 
   return (

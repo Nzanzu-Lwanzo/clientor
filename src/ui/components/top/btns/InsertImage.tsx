@@ -7,11 +7,13 @@ import RemoteImage from "./ImagePicker/Remote";
 import LocalImage from "./ImagePicker/Local";
 
 const InsertImage = () => {
+  // STATES
+  const [imgLocation, setImgLocation] = useState<"cloud" | "local">("local");
+
+  // CH
   const {
     insertImage: { toggler, dataHandler },
   } = useFunctionalities();
-
-  const [imgLocation, setImgLocation] = useState<"cloud" | "local">("local");
 
   return (
     <IconBtn type="button" handleClick={toggler} editMode="$ins_img">
@@ -38,7 +40,9 @@ const InsertImage = () => {
 
         <div className="img-infos-container">
           {imgLocation == "cloud" ? <RemoteImage /> : <LocalImage />}
-          <button className="btn" type="submit">Insert</button>
+          <button className="btn" type="submit">
+            Insert
+          </button>
         </div>
       </form>
     </IconBtn>

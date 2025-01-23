@@ -65,6 +65,7 @@ export const formatImage = (image: LocalImageType | RemoteImageType) => {
   return {
     mdx,
     rtx,
+    id: image.id,
   };
 };
 

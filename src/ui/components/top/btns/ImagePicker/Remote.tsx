@@ -25,9 +25,14 @@ const RemoteImagePreviewer = ({
 };
 
 const RemoteImage = () => {
-  const { setRemoteImages: setImages, remoteImages: images } =
-    useClientorContext();
+  // STATES
+  const {
+    setRemoteImages: setImages,
+    remoteImages: images,
+  } = useClientorContext();
   const [url, setUrl] = useState("");
+
+  // CH
   const validateImage = useValidateImage();
 
   return (
@@ -45,21 +50,22 @@ const RemoteImage = () => {
       </div>
       {images.length > 0 && (
         <div className="preview-imgs">
-          {images.map((image) => {
-            return (
-              <>
-                <RemoteImagePreviewer
-                  image={image}
-                  key={image.id}
-                  deleteImage={() => {
-                    setImages((prevImages) =>
-                      prevImages.filter((img) => img.id !== image.id)
-                    );
-                  }}
-                />
-              </>
-            );
-          })}
+          {images
+            .map((image) => {
+              return (
+                <>
+                  <RemoteImagePreviewer
+                    image={image}
+                    key={image.id}
+                    deleteImage={() => {
+                      setImages((prevImages) =>
+                        prevImages.filter((img) => img.id !== image.id)
+                      );
+                    }}
+                  />
+                </>
+              );
+            })}
         </div>
       )}
       <button

@@ -48,6 +48,9 @@ interface ClientorContexttype {
 
   remoteImages: RemoteImageType[];
   setRemoteImages: React.Dispatch<React.SetStateAction<RemoteImageType[]>>;
+
+  idb: IDBDatabase | null;
+  setIdb: React.Dispatch<React.SetStateAction<IDBDatabase | null>>;
 }
 
 const ClientorContext = createContext<ClientorContexttype | null>(null);
@@ -67,6 +70,7 @@ export const ClientorContextProvider = ({
   const [editorType, setEditorType] = useState<EditorType>("rtx");
   const [localImages, setLocalImages] = useState<LocalImageType[]>([]);
   const [remoteImages, setRemoteImages] = useState<RemoteImageType[]>([]);
+  const [idb, setIdb] = useState<IDBDatabase | null>(null);
   const textAreaDivRef = useRef<HTMLDivElement | null>(null);
   const previewDivRef = useRef<HTMLDivElement | null>(null);
 
@@ -85,6 +89,8 @@ export const ClientorContextProvider = ({
     setLocalImages,
     remoteImages,
     setRemoteImages,
+    idb,
+    setIdb,
   };
 
   useEffect(() => {
