@@ -1,22 +1,22 @@
-import { useCallback, useEffect, useTransition } from "react";
+import { useCallback, useEffect } from "react";
 import { useClientorContext } from "../../../lib/contexts/clientorContext";
 import { useClientorUserContext } from "../../../lib/contexts/clientorUserContext";
+import { useStorage } from "../../../lib/hooks";
+import connectDB from "../../../lib/storage/idb";
 
 const Textarea = () => {
+  // STATES
   const { maxContentLength } = useClientorUserContext();
 
-  const {
-    setRawText,
-    rawText,
-    setHtmlText,
-    textAreaDivRef,
-    editorType,
-    setLocalImages,
-    setRemoteImages,
-  } = useClientorContext();
+  const { setRawText, rawText, setHtmlText, textAreaDivRef, editorType } =
+    useClientorContext();
 
-  // RH
-  const [deleteImageTransition, setDeleteImageTransition] = useTransition();
+  // CH
+  const { deleteImageFromStore } = useStorage({
+    handleError() {},
+
+    handleIdbNotSupported() {},
+  });
 
   // FEH
   const handleTyping = useCallback((event: React.FormEvent<HTMLDivElement>) => {
@@ -36,25 +36,33 @@ const Textarea = () => {
 
     const textarea = textAreaDivRef.current;
 
+    let handleDbClick: (event: MouseEvent) => void;
+    let handleOpenLink: (event: MouseEvent) => void;
+
     if (textarea) {
-      textarea.addEventListener("dblclick", function (event) {
+      // Delete images on double click
+      handleDbClick = function (event: MouseEvent) {
         const element = event.target as HTMLElement;
         const elementStr = element.outerHTML; // .replaceAll(`"`, `\"`)
+
         if (element.matches("img")) {
           let classname = element.className;
           let id = classname.split("-").at(-1);
 
-          setDeleteImageTransition(() => {
+          connectDB().then((result) => {
+            if (result === "ERROR") {
+              return;
+            }
+
+            if (result === "NOT_SUPPORTED") {
+              return;
+            }
+
             // Check first in local images
             // because the user is more likely to want to remove locally selected images
-            setLocalImages((prevImages) => {
-              return prevImages.filter((image) => image.id != id);
-            });
-
+            deleteImageFromStore({ id, store: "local", database: result });
             // Then check in the remote images
-            setRemoteImages((prevImages) => {
-              return prevImages.filter((image) => image.id != id);
-            });
+            deleteImageFromStore({ id, store: "remote", database: result });
           });
 
           // Once the image deleted, we should remove it
@@ -69,8 +77,26 @@ const Textarea = () => {
             return prevText.replaceAll(elementStr, "");
           });
         }
-      });
+      };
+
+      // Open a link when the user clicks on a tag
+      handleOpenLink = function (event: MouseEvent) {
+        const anchorTag = event.target as HTMLAnchorElement;
+
+        if (anchorTag.matches("a")) {
+          window.open(anchorTag.href);
+        }
+      };
+
+      textarea.addEventListener("dblclick", handleDbClick);
+      textarea.addEventListener("click", handleOpenLink);
     }
+
+    return () => {
+      if (textarea) {
+        textarea.removeEventListener("dblclick", handleDbClick);
+      }
+    };
   }, []);
 
   return (
@@ -80,7 +106,7 @@ const Textarea = () => {
     >
       <div
         id="text"
-        contentEditable={!deleteImageTransition}
+        contentEditable
         onInput={handleTyping}
         ref={textAreaDivRef}
         autoFocus

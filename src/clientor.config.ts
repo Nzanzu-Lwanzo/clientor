@@ -8,7 +8,7 @@ export interface ClientorConfigType {
 const ClientorDefaultConfiguration: ClientorConfigType = {
   showCountChars: true,
   imagesValidate: {
-    max: 5,
+    max: 1,
     remote: {
       allowHttpImages: false,
       allowOrigins: "*",

@@ -172,7 +172,7 @@ export default function useFunctionalities() {
           })
           .join(" ");
 
-        textarea.innerHTML += " ".concat(imagesEltString, "<br/>");
+        textarea.innerHTML += " ".concat(imagesEltString, "<br/><br/>");
 
         switch (editorType) {
           case "mdx": {

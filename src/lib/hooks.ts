@@ -1,4 +1,8 @@
-import { useClientorContext } from "./contexts/clientorContext";
+import {
+  LocalImageType,
+  RemoteImageType,
+  useClientorContext,
+} from "./contexts/clientorContext";
 import { marked } from "marked";
 import { playSoundOnError, playSoundOnSend } from "./sounds";
 import { EditMode } from "./contexts/clientorContext";
@@ -21,15 +25,19 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
     textAreaDivRef,
     setRawText,
     setHtmlText,
-    localImages,
-    remoteImages,
   } = useClientorContext();
 
   const { minContentLength, maxContentLength, playSounds } =
     useClientorUserContext();
 
+  const { emptyStore, getImages } = useStorage({
+    handleIdbNotSupported() {},
+
+    handleError() {},
+  });
+
   return {
-    handler: () => {
+    handler: async () => {
       // if the user provided a minimum content length
       // and the length of the raw text is inferior to that value
       // then we the function he defined to handle the case
@@ -46,12 +54,14 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
 
       // This is so we can make decisions and perform actions
       // based on wether the message was successfully successfullyHandled or whatever
+      const localImgs = (await getImages("local")) as LocalImageType[];
+      const remoteImgs = (await getImages("remote")) as RemoteImageType[];
       let successfullyHandled = handleSubmit({
         html:
           editorType !== "rtx" ? (marked.parse(htmlText) as string) : htmlText,
         raw: rawText,
-        localImages: localImages.map((image) => image.file),
-        remoteImages: remoteImages.map((image) => image.url),
+        localImages: localImgs.map((img) => img.file),
+        remoteImages: remoteImgs.map((img) => img.url),
       });
 
       if (successfullyHandled) {
@@ -68,6 +78,9 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
           textAreaDivRef.current.innerHTML = "";
           setRawText("");
           setHtmlText("");
+
+          // Delete the images temporarily stored in the idb database
+          emptyStore();
         } else {
         }
       } else {
@@ -247,15 +260,23 @@ export const useStorage = ({
       }
     },
 
-    deleteImageFronStore: ({
+    deleteImageFromStore: ({
       id,
       store,
+      database,
     }: {
-      id: string;
+      id: string | undefined;
       store: "local" | "remote";
+      database?: IDBDatabase;
     }) => {
-      if (idb) {
-        const transaction = idb.transaction(
+      // If we use this function inside of an effect,
+      // idb state is null. So, to avoid this, we let
+      // user of the function provide an instance of
+      // the opened database when they can.
+      const db = database || idb;
+
+      if (db && id) {
+        const transaction = db.transaction(
           ["clientor_images_local", "clientor_images_remote"],
           "readwrite"
         );
@@ -270,6 +291,46 @@ export const useStorage = ({
             transaction.objectStore("clientor_images_remote").delete(id);
             break;
           }
+        }
+      }
+    },
+
+    getImages: (
+      type: "local" | "remote"
+    ): Promise<(LocalImageType | RemoteImageType)[]> => {
+      switch (type) {
+        case "local": {
+          const request = idb
+            ?.transaction("clientor_images_local", "readonly")
+            .objectStore("clientor_images_local")
+            .getAll();
+
+          return new Promise((resolve, reject) => {
+            request?.addEventListener("success", function () {
+              resolve(this.result);
+            });
+
+            request?.addEventListener("error", function () {
+              reject([]);
+            });
+          });
+        }
+
+        case "remote": {
+          const request = idb
+            ?.transaction("clientor_images_remote", "readonly")
+            .objectStore("clientor_images_remote")
+            .getAll();
+
+          return new Promise((resolve, reject) => {
+            request?.addEventListener("success", function () {
+              resolve(this.result);
+            });
+
+            request?.addEventListener("error", function () {
+              reject([]);
+            });
+          });
         }
       }
     },
