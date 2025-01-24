@@ -30,6 +30,11 @@ All the code lives inside of the src folder which contains three subfolders.
 
     This [file](src/clientor.config.ts) contains the default configuration values defined for a Clientor component. They should be overridable by the user configuration values. 
 
+6. #### clientorUserContext.tsx
+
+    This file contains a context exposed along with the ClientorBox component itself. All the configurations a user should provide to have a control on the behavior of the component should be passed to this context so they can be accessed in all the components.
+    Not be confused with the __clientorContext.tsx__. This is the context used internally. 
+
 ## Components structure
 
 All the components should follow the following pattern to maintain consistentcy throughout the project and make debugging a brease.
@@ -43,7 +48,7 @@ All the components should follow the following pattern to maintain consistentcy 
 7. INTERMEDIARY VARIABLES alias **IVS**
 8. TSX | JSX
 
-Each part should be labeled to serve as a landmark, except the last one which is optionnal. Refer to the following example :
+Each part should be labelled to serve as a landmark, except the last one which is optional. Refer to the following example :
 
 ```tsx
 const Component = () => {
@@ -100,7 +105,7 @@ const Component = () => {
   }, []);
 
   //   7. IVS
-  let buttonLabel = {loading ? "Wait ..." : "Create"}
+  let buttonLabel = loading ? "Wait ..." : "Create"
 
   // 8. TSX | JSX
 
