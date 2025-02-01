@@ -228,7 +228,13 @@ export default function useFunctionalities() {
           }
         });
       },
-      handleFeature: () => {},
+      handleFeature: (id: string | number) => {
+        console.log(id);
+        // Hide the floating card
+        setEditMode((prevModes) =>
+          prevModes.filter((_mode) => _mode !== "$ins_img")
+        );
+      },
     },
 
     insertHeading: () => {},

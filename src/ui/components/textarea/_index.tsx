@@ -43,7 +43,7 @@ const Textarea = () => {
     const textarea = textAreaDivRef.current;
 
     let handleDbClick: (event: MouseEvent) => void;
-    let handleOpenLink: (event: MouseEvent) => void;
+    let handleOpenLinkOnClick: (event: MouseEvent | TouchEvent) => void;
 
     if (textarea) {
       // Delete images on double click
@@ -84,12 +84,12 @@ const Textarea = () => {
             if (!match) return prevText;
             return prevText.replaceAll(match[0], "");
           });
-
         }
       };
 
       // Open a link when the user clicks on a tag
-      handleOpenLink = function (event: MouseEvent) {
+      handleOpenLinkOnClick = function (event: MouseEvent | TouchEvent) {
+        event.preventDefault();
         const anchorTag = event.target as HTMLAnchorElement;
 
         if (anchorTag.matches("a")) {
@@ -98,12 +98,15 @@ const Textarea = () => {
       };
 
       textarea.addEventListener("dblclick", handleDbClick);
-      textarea.addEventListener("click", handleOpenLink);
+      textarea.addEventListener("click", handleOpenLinkOnClick);
+      textarea.addEventListener("touchstart", handleOpenLinkOnClick);
     }
 
     return () => {
       if (textarea) {
         textarea.removeEventListener("dblclick", handleDbClick);
+        textarea.removeEventListener("click", handleOpenLinkOnClick);
+        textarea.removeEventListener("touchstart", handleOpenLinkOnClick);
       }
     };
   }, [htmlText]);
