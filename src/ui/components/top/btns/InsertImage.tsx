@@ -12,13 +12,13 @@ const InsertImage = () => {
 
   // CH
   const {
-    insertImage: { toggler, dataHandler },
+    insertImage: { toggler, handleFeature },
   } = useFunctionalities();
 
   return (
     <IconBtn type="button" handleClick={toggler} editMode="$ins_img">
       <Image size={19} />
-      <form className="floating" onSubmit={dataHandler}>
+      <form className="floating" onSubmit={handleFeature}>
         <div className="top-bar">
           <span
             className={`center span-btn ${

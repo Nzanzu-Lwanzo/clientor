@@ -1,8 +1,9 @@
 import { LocalImageType, RemoteImageType } from "./contexts/clientorContext";
 import { isLocalImage } from "./types";
 import { LinkDataType } from "./useFunctionalities";
+
 export const debouncer = (fn: (args: any) => void, delay: number) => {
-  let timer: number;
+  let timer: NodeJS.Timeout;
 
   return (...args: any) => {
     clearTimeout(timer);
@@ -14,7 +15,7 @@ export const debouncer = (fn: (args: any) => void, delay: number) => {
 };
 
 export const throttler = (fn: (args: any) => void, delay: number) => {
-  let timer: null | number = null;
+  let timer: null | NodeJS.Timeout = null;
 
   return (...args: any) => {
     if (timer === null) {

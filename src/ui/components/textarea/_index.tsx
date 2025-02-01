@@ -8,8 +8,14 @@ const Textarea = () => {
   // STATES
   const { maxContentLength } = useClientorUserContext();
 
-  const { setRawText, rawText, setHtmlText, textAreaDivRef, editorType } =
-    useClientorContext();
+  const {
+    setRawText,
+    rawText,
+    setHtmlText,
+    textAreaDivRef,
+    editorType,
+    htmlText,
+  } = useClientorContext();
 
   // CH
   const { deleteImageFromStore } = useStorage({
@@ -74,8 +80,11 @@ const Textarea = () => {
           // to remove the string from their markdown
           setHtmlText((prevText) => {
             // Remove the elementStr from prevText
-            return prevText.replaceAll(elementStr, "");
+            let match = htmlText.match(elementStr);
+            if (!match) return prevText;
+            return prevText.replaceAll(match[0], "");
           });
+
         }
       };
 
@@ -97,7 +106,7 @@ const Textarea = () => {
         textarea.removeEventListener("dblclick", handleDbClick);
       }
     };
-  }, []);
+  }, [htmlText]);
 
   return (
     <div

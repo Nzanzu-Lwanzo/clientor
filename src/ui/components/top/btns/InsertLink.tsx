@@ -5,13 +5,13 @@ import { Link } from "lucide-react";
 const InsertLink = () => {
   // CH
   const {
-    insertLink: { toggler, dataHandler },
+    insertLink: { toggler, handleFeature },
   } = useFunctionalities();
 
   return (
     <IconBtn type="button" handleClick={toggler} editMode="$ins_link">
       <Link size={19} />
-      <form className="floating" onSubmit={dataHandler}>
+      <form className="floating" onSubmit={handleFeature}>
         <div className="contains-input">
           <label htmlFor="link">Link</label>
           <input

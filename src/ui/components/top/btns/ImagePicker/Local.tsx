@@ -93,7 +93,6 @@ const LocalImage = () => {
               return {
                 file: file,
                 id: nanoid(),
-                type: "blob",
               };
             })
         );

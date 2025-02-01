@@ -4,10 +4,12 @@ import { Italic as ItalicIcon } from "lucide-react";
 
 const Italic = () => {
   // CH
-  const { italic } = useFunctionalities();
+  const {
+    italic: { toggler },
+  } = useFunctionalities();
 
   return (
-    <IconBtn handleClick={italic} editMode="italic" type="button">
+    <IconBtn handleClick={toggler} editMode="italic" type="button">
       <ItalicIcon size={19} />
     </IconBtn>
   );

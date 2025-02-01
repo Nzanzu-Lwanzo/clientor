@@ -35,45 +35,56 @@ export default function useFunctionalities() {
 
   return {
     // FUNCTIONALITY ****************************************************************
-    bold: () => {
-      setEditMode((prevModes) => {
-        if (prevModes.includes("bold")) {
-          return prevModes.filter((mode) => mode !== "bold");
-        } else {
-          return [...prevModes, "bold"];
-        }
-      });
+    bold: {
+      toggler: () => {
+        setEditMode((prevModes) => {
+          if (prevModes.includes("bold")) {
+            return prevModes.filter((mode) => mode !== "bold");
+          } else {
+            return [...prevModes, "bold"];
+          }
+        });
+      },
+      handleFeature: () => {},
     },
 
     // FUNCTIONALITY ****************************************************************
-    italic: () => {
-      setEditMode((prevModes) => {
-        if (prevModes.includes("italic")) {
-          return prevModes.filter((mode) => mode !== "italic");
-        } else {
-          return [...prevModes, "italic"];
-        }
-      });
+    italic: {
+      toggler: () => {
+        setEditMode((prevModes) => {
+          if (prevModes.includes("italic")) {
+            return prevModes.filter((mode) => mode !== "italic");
+          } else {
+            return [...prevModes, "italic"];
+          }
+        });
+      },
+      handleFeature: () => {},
     },
 
     // FUNCTIONALITY ****************************************************************
-    underline: () => {
-      setEditMode((prevModes) => {
-        if (prevModes.includes("underline")) {
-          return prevModes.filter((mode) => mode !== "underline");
-        } else {
-          return [...prevModes, "underline"];
-        }
-      });
+    underline: {
+      toggler: () => {
+        setEditMode((prevModes) => {
+          if (prevModes.includes("underline")) {
+            return prevModes.filter((mode) => mode !== "underline");
+          } else {
+            return [...prevModes, "underline"];
+          }
+        });
+      },
+      handleFeature: () => {},
     },
 
     // FUNCTIONALITY ****************************************************************
-    deleteAll: () => {
-      if (textAreaDivRef.current) {
-        textAreaDivRef.current.innerHTML = "";
-        setHtmlText("");
-        setRawText("");
-      }
+    deleteAll: {
+      handleFeature: () => {
+        if (textAreaDivRef.current) {
+          textAreaDivRef.current.innerHTML = "";
+          setHtmlText("");
+          setRawText("");
+        }
+      },
     },
 
     // FUNCTIONALITY ****************************************************************
@@ -93,7 +104,7 @@ export default function useFunctionalities() {
       },
 
       // This function is the one being called when the user clicks on insert button
-      dataHandler: (event: React.FormEvent<HTMLFormElement>) => {
+      handleFeature: (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
@@ -156,7 +167,7 @@ export default function useFunctionalities() {
       },
 
       // This function is the one being called when the user clicks on insert button
-      dataHandler: (event: React.FormEvent<HTMLFormElement>) => {
+      handleFeature: (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (localImages.length === 0 && remoteImages.length === 0) return;
@@ -204,17 +215,20 @@ export default function useFunctionalities() {
     },
 
     // FUNCTIONALITY ****************************************************************
-    reference: () => {
-      setEditMode((prevModes) => {
-        if (prevModes.includes("$reference")) {
-          return prevModes.filter((_mode) => _mode !== "$reference");
-        } else {
-          return [
-            ...prevModes.filter((_mode) => !_mode.startsWith("$")),
-            "$reference",
-          ];
-        }
-      });
+    reference: {
+      toggler: () => {
+        setEditMode((prevModes) => {
+          if (prevModes.includes("$reference")) {
+            return prevModes.filter((_mode) => _mode !== "$reference");
+          } else {
+            return [
+              ...prevModes.filter((_mode) => !_mode.startsWith("$")),
+              "$reference",
+            ];
+          }
+        });
+      },
+      handleFeature: () => {},
     },
 
     insertHeading: () => {},

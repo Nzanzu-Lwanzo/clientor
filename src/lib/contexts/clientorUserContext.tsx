@@ -20,6 +20,7 @@ export interface ImagesValidateOptionsType {
 }
 
 export interface ClientorUserContextType {
+  handleSubmit: (data: ClientorBoxReturnType) => boolean;
   maxContentLength?: {
     value: number;
     handler: () => void;
@@ -36,7 +37,6 @@ export interface ClientorUserContextType {
   };
   imagesValidate?: ImagesValidateOptionsType;
   showCountChars?: boolean;
-  handleSubmit: (data: ClientorBoxReturnType) => boolean;
 }
 
 const ClientorUserContext = createContext<ClientorUserContextType | null>(null);

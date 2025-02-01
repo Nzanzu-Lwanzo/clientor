@@ -4,10 +4,12 @@ import { Delete } from "lucide-react";
 
 const DeleteAll = () => {
   // CH
-  const { deleteAll } = useFunctionalities();
+  const {
+    deleteAll: { handleFeature },
+  } = useFunctionalities();
 
   return (
-    <IconBtn handleClick={deleteAll} type="button">
+    <IconBtn handleClick={handleFeature} type="button">
       <Delete size={19} />
     </IconBtn>
   );

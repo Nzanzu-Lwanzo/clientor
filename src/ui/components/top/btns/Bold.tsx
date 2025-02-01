@@ -4,10 +4,12 @@ import { Bold as BoldIcon } from "lucide-react";
 
 const Bold = () => {
   // CH
-  const { bold } = useFunctionalities();
+  const {
+    bold: { toggler },
+  } = useFunctionalities();
 
   return (
-    <IconBtn handleClick={bold} editMode="bold" type="button">
+    <IconBtn handleClick={toggler} editMode="bold" type="button">
       <BoldIcon size={19} />
     </IconBtn>
   );

@@ -4,7 +4,9 @@ import { AtSign } from "lucide-react";
 
 const AtTag = () => {
   // CH
-  const { reference: toggler } = useFunctionalities();
+  const {
+    reference: { toggler },
+  } = useFunctionalities();
 
   return (
     <IconBtn type="button" handleClick={toggler} editMode="$reference">

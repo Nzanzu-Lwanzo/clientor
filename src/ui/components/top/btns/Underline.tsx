@@ -4,10 +4,12 @@ import { Underline as UnderlineIcon } from "lucide-react";
 
 const Underline = () => {
   // CH
-  const { underline } = useFunctionalities();
+  const {
+    underline: { toggler },
+  } = useFunctionalities();
 
   return (
-    <IconBtn handleClick={underline} editMode="underline" type="button">
+    <IconBtn handleClick={toggler} editMode="underline" type="button">
       <UnderlineIcon size={19} />
     </IconBtn>
   );
