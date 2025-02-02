@@ -35,6 +35,21 @@ function App() {
         },
         local: {},
       }}
+      requestRefs={() => {
+        return new Promise((resolve) => {
+          const users = [
+            { id: 1, name: "John Doe" },
+            { id: 2, name: "Jane Doe" },
+            { id: 3, name: "Marcus Garvey" },
+            { id: 4, name: "Lumumba" },
+            { id: 5, name: "2Pac Shakur" },
+            { id: 6, name: "Dr Dre" },
+            { id: 7, name: "Tshisekedi" },
+            { id: 8, name: "Mamadou Ndala" },
+          ];
+          resolve(users);
+        });
+      }}
     >
       <ClientorContextProvider>
         <ClientorBox />

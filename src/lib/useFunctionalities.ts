@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useClientorContext } from "./contexts/clientorContext";
 import { useStorage } from "./hooks";
 import { formatImage, formatLink } from "./utils";
+import { useClientorUserContext } from "./contexts/clientorUserContext";
 
 // event: React.MouseEvent<HTMLDivElement, MouseEvent>
 
@@ -32,6 +34,15 @@ export default function useFunctionalities() {
       console.log("Not supported");
     },
   });
+
+  const { requestRefs } = useClientorUserContext();
+  const [refs, setRefs] = useState<unknown[]>([]);
+  const [loadingRefs, setLoadingRefs] = useState<"idle" | "loading" | "error">(
+    "idle"
+  );
+
+  // For the debounce, when requesting for refs
+  let timer: NodeJS.Timeout;
 
   return {
     // FUNCTIONALITY ****************************************************************
@@ -232,9 +243,44 @@ export default function useFunctionalities() {
         console.log(id);
         // Hide the floating card
         setEditMode((prevModes) =>
-          prevModes.filter((_mode) => _mode !== "$ins_img")
+          prevModes.filter((_mode) => _mode !== "$reference")
         );
       },
+      getRefs: async (event: React.ChangeEvent<HTMLInputElement>) => {
+        // For debouncing purpose, reset the timeout
+        clearTimeout(timer);
+
+        // Get the hint to perform a search
+        let hint = event.target.value;
+
+        // Request the refs after 3 seconds of non typing
+        // **ISSUE** : Instead of being called once
+        // the callback is being called twice.
+        timer = setTimeout(() => {
+          // Set the loading state to true
+          // so we can display a feedback to the user
+          // indicating that a request is on its way
+          setLoadingRefs("loading");
+
+          // This function to request for references
+          // will be provided by the user
+          // through the context. It must return a Promise
+          // that resolves to an array (even if it's one element).
+          // Normally, this would be function to request
+          // some data from the database, based on the
+          // search hint and then return it.
+          requestRefs(hint)
+            .then(function (_refs) {
+              setRefs(_refs);
+              setLoadingRefs("idle");
+            })
+            .catch(() => {
+              setLoadingRefs("error");
+            });
+        }, 1000);
+      },
+      refs,
+      loadingRefs,
     },
 
     insertHeading: () => {},

@@ -1,8 +1,7 @@
-
 ## TODO
 
 - Test if image validation is working fine.
-- On double click on an image, delete the image from the idb Database too
+- From [this file (AtTag.tsx)](src\ui\components\top\btns\AtTag.tsx), remove all references to MockUser type and leave the unkown type for safety
 
 ## BUG FIXES
 

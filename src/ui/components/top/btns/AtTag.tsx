@@ -2,22 +2,23 @@ import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { AtSign } from "lucide-react";
 
+type MockUser = { id: number; name: string };
+
+const LiElement = ({
+  _ref,
+  onClick,
+}: {
+  _ref: unknown;
+  onClick: (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
+}) => {
+  return <li onClick={onClick}>@{(_ref as MockUser).name}</li>;
+};
+
 const AtTag = () => {
   // CH
   const {
-    reference: { toggler },
+    reference: { toggler, getRefs, refs, handleFeature },
   } = useFunctionalities();
-
-  // const users = [
-  //   { id: 1, name: "John Doe" },
-  //   { id: 2, name: "Jane Doe" },
-  //   { id: 3, name: "Marcus Garvey" },
-  //   { id: 4, name: "Lumumba" },
-  //   { id: 5, name: "2Pac Shakur" },
-  //   { id: 6, name: "Dr Dre" },
-  //   { id: 7, name: "Tshisekedi" },
-  //   { id: 8, name: "Mamadou Ndala" },
-  // ];
 
   return (
     <IconBtn type="button" handleClick={toggler} editMode="$reference">
@@ -26,12 +27,25 @@ const AtTag = () => {
         <div className="contains-input">
           <input
             type="search"
-            placeholder="@some_id_to_search_by"
+            placeholder="@type_to_search"
             id="search"
             name="search"
+            onChange={getRefs}
           />
         </div>
-        <ul className="list-references"></ul>
+        <ul className="list-references">
+          {refs.map((_ref) => {
+            return (
+              <LiElement
+                key={(_ref as MockUser).id}
+                onClick={() => {
+                  handleFeature((_ref as MockUser).id);
+                }}
+                _ref={_ref}
+              />
+            );
+          })}
+        </ul>
       </div>
     </IconBtn>
   );

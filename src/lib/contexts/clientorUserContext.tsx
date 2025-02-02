@@ -21,6 +21,7 @@ export interface ImagesValidateOptionsType {
 
 export interface ClientorUserContextType {
   handleSubmit: (data: ClientorBoxReturnType) => boolean;
+  requestRefs: (hint: string) => Promise<unknown[]>;
   maxContentLength?: {
     value: number;
     handler: () => void;
