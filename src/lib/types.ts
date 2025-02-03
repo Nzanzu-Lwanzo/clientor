@@ -5,6 +5,7 @@ export interface ClientorBoxReturnType {
   html: string;
   localImages: LocalImageType["file"][];
   remoteImages: RemoteImageType["url"][];
+  references: (number | string)[];
 }
 
 export const isLocalImage = (

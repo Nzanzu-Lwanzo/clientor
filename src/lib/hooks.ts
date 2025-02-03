@@ -25,6 +25,7 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
     textAreaDivRef,
     setRawText,
     setHtmlText,
+    references,
   } = useClientorContext();
 
   const { minContentLength, maxContentLength, playSounds } =
@@ -62,6 +63,7 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
         raw: rawText,
         localImages: localImgs.map((img) => img.file),
         remoteImages: remoteImgs.map((img) => img.url),
+        references,
       });
 
       if (successfullyHandled) {

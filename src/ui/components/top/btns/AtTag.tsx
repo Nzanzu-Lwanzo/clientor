@@ -1,8 +1,11 @@
 import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { AtSign } from "lucide-react";
+import Loader from "../../_general/Loader";
+import { useRef } from "react";
+import { useClientorUserContext } from "../../../../lib/contexts/clientorUserContext";
 
-type MockUser = { id: number; name: string };
+export type MockUser = { id: number; name: string };
 
 const LiElement = ({
   _ref,
@@ -11,13 +14,26 @@ const LiElement = ({
   _ref: unknown;
   onClick: (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 }) => {
-  return <li onClick={onClick}>@{(_ref as MockUser).name}</li>;
+  const {
+    references: { label: refLabel },
+  } = useClientorUserContext();
+  return <li onClick={onClick}>@{(_ref as any)[refLabel]}</li>;
 };
 
 const AtTag = () => {
+  // RH
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+
   // CH
   const {
-    reference: { toggler, getRefs, refs, handleFeature },
+    reference: {
+      toggler,
+      getRefs,
+      refs,
+      handleFeature,
+      loadingRefs,
+      updatingRefsState,
+    },
   } = useFunctionalities();
 
   return (
@@ -31,20 +47,36 @@ const AtTag = () => {
             id="search"
             name="search"
             onChange={getRefs}
+            ref={searchInputRef}
           />
         </div>
         <ul className="list-references">
-          {refs.map((_ref) => {
-            return (
-              <LiElement
-                key={(_ref as MockUser).id}
-                onClick={() => {
-                  handleFeature((_ref as MockUser).id);
-                }}
-                _ref={_ref}
-              />
-            );
-          })}
+          {loadingRefs === "loading" || updatingRefsState ? (
+            <Loader />
+          ) : (
+            <>
+              {refs.length === 0 ? (
+                <span style={{ display: "inline-block", textAlign: "center" }}>
+                  No reference found !
+                </span>
+              ) : (
+                refs.map((_ref) => {
+                  return (
+                    <LiElement
+                      key={(_ref as MockUser).id}
+                      onClick={() => {
+                        handleFeature(
+                          (_ref as MockUser).id,
+                          searchInputRef.current
+                        );
+                      }}
+                      _ref={_ref}
+                    />
+                  );
+                })
+              )}
+            </>
+          )}
         </ul>
       </div>
     </IconBtn>
