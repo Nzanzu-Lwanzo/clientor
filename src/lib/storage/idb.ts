@@ -20,9 +20,9 @@ function connectDB(): Promise<IDBDatabase | "NOT_SUPPORTED" | "ERROR"> {
       reject("ERROR");
     });
 
-    request.addEventListener('success',function(){
-      resolve(this.result)
-    })
+    request.addEventListener("success", function () {
+      resolve(this.result);
+    });
 
     request.addEventListener("upgradeneeded", function () {
       const database = this.result;
@@ -42,5 +42,21 @@ function connectDB(): Promise<IDBDatabase | "NOT_SUPPORTED" | "ERROR"> {
     });
   });
 }
+
+export const connectToDb = connectDB().then((result) => {
+  /*
+      Open a database connection, handle the exceptions
+      and return the result of the operation - the database reference
+    */
+  if (result === "ERROR") {
+    return;
+  }
+
+  if (result === "NOT_SUPPORTED") {
+    return;
+  }
+
+  return result;
+});
 
 export default connectDB;

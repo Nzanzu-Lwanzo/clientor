@@ -17,7 +17,7 @@ const LiElement = ({
   const {
     references: { label: refLabel },
   } = useClientorUserContext();
-  return <li onClick={onClick}>@{(_ref as any)[refLabel]}</li>;
+  return <li onClick={onClick}>@{(_ref as any)[refLabel!]}</li>;
 };
 
 const AtTag = () => {

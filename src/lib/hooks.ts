@@ -9,7 +9,7 @@ import { EditMode } from "./contexts/clientorContext";
 import { useClientorUserContext } from "./contexts/clientorUserContext";
 import { ClientorUserContextType } from "./contexts/clientorUserContext";
 import ClientorDefaultConfiguration from "../clientor.config";
-import { bytesToMB } from "./helpers";
+import { bytesToMB, validateURL } from "./helpers";
 import connectDB from "./storage/idb";
 import { useEffect } from "react";
 
@@ -39,22 +39,28 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
 
   return {
     handler: async () => {
-      // if the user provided a minimum content length
-      // and the length of the raw text is inferior to that value
-      // then we the function he defined to handle the case
+      /*  
+        if the user provided a minimum content length
+        and the length of the raw text is inferior to that value
+        then we the function he defined to handle the case
+      */
       if (minContentLength && rawText.length <= minContentLength.value) {
         minContentLength.handler();
       }
 
-      // if the user provided a maximun content length
-      // and the length of the raw text is superior to that value
-      // then we the function he defined to handle the case
+      /*
+        if the user provided a maximun content length
+        and the length of the raw text is superior to that value
+        then we the function he defined to handle the case
+      */
       if (maxContentLength && rawText.length >= maxContentLength.value) {
         maxContentLength.handler();
       }
 
-      // This is so we can make decisions and perform actions
-      // based on wether the message was successfully successfullyHandled or whatever
+      /*
+        This is so we can make decisions and perform actions
+        based on wether the message was successfully successfullyHandled or whatever
+      */
       const localImgs = (await getImages("local")) as LocalImageType[];
       const remoteImgs = (await getImages("remote")) as RemoteImageType[];
       let successfullyHandled = handleSubmit({
@@ -74,8 +80,10 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
           playSoundOnSend(playSounds?.onSend);
         }
 
-        // Delete everything in the box
-        // update the text states
+        /*
+          Delete everything in the box
+          update the text states
+        */
         if (textAreaDivRef.current) {
           textAreaDivRef.current.innerHTML = "";
           setRawText("");
@@ -111,6 +119,10 @@ export const useShowOneMenuAtATime = () => {
 };
 
 export const useValidateImage = () => {
+  /*
+    Merge the option values passed through the context provider
+    with the default option values.
+  */
   const {
     local: localOptions,
     remote: remoteOptions,
@@ -152,6 +164,14 @@ export const useValidateImage = () => {
 
     // REMOTE IMAGHE
     else if (typeof image == "string") {
+      // First validate the URL by confronting it to a Regexp
+      if (!validateURL(image, "https") && !validateURL(image, "http")) {
+        return {
+          verdict: false,
+          reason: "INVALID_URL_SCHEMA",
+        };
+      }
+
       const { allowHttpImages, allowOrigins, banOrigins } = remoteOptions!;
       const { origin, protocol } = new URL(image);
 
@@ -207,7 +227,8 @@ export const useStorage = ({
   handleIdbNotSupported: () => void;
   handleError: () => void;
 }) => {
-  const { setIdb, localImages, remoteImages, idb } = useClientorContext();
+  const { setIdb, localImages, remoteImages, idb, setCountImagesInDb } =
+    useClientorContext();
 
   useEffect(() => {
     connectDB()
@@ -239,6 +260,8 @@ export const useStorage = ({
           "readwrite"
         );
 
+        let countTotalImages = localImages.length + remoteImages.length;
+
         // STORE LOCAL IMAGES
         for (let image of localImages) {
           transaction.objectStore("clientor_images_local").put(image);
@@ -248,12 +271,16 @@ export const useStorage = ({
         for (let image of remoteImages) {
           transaction.objectStore("clientor_images_remote").put(image);
         }
+
+        // MEMORIZE THE NUMBER OF IMAGES ALREADY IN IDB
+        setCountImagesInDb((prev) => prev + countTotalImages);
       }
     },
 
-    emptyStore: () => {
-      if (idb) {
-        const transaction = idb.transaction(
+    emptyStore: (database?: IDBDatabase | undefined) => {
+      const db = database || idb;
+      if (db) {
+        const transaction = db.transaction(
           ["clientor_images_local", "clientor_images_remote"],
           "readwrite"
         );
@@ -271,10 +298,12 @@ export const useStorage = ({
       store: "local" | "remote";
       database?: IDBDatabase;
     }) => {
-      // If we use this function inside of an effect,
-      // idb state is null. So, to avoid this, we let
-      // user of the function provide an instance of
-      // the opened database when they can.
+      /*
+        If we use this function inside of an effect,
+        idb state is null. So, to avoid this, we let
+        user of the function provide an instance of
+        the opened database when they can.
+      */
       const db = database || idb;
 
       if (db && id) {

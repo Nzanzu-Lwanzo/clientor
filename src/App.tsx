@@ -67,13 +67,13 @@ function App() {
             );
           });
         },
-        label: "name",
+        // label: "name",
         formatURL(_ref) {
           const reference = _ref as MockUser;
 
           return `https://www.backend.tech/user/${reference.name}/${reference.id}`;
         },
-        id: "id",
+        // id: "id",
       }}
     >
       <ClientorContextProvider>

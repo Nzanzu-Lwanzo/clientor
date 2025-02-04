@@ -5,6 +5,7 @@ import {
 } from "../../../../../lib/contexts/clientorContext";
 import { nanoid } from "nanoid";
 import { useValidateImage } from "../../../../../lib/hooks";
+import { useClientorUserContext } from "../../../../../lib/contexts/clientorUserContext";
 
 const RemoteImagePreviewer = ({
   image,
@@ -29,11 +30,16 @@ const RemoteImage = () => {
   const {
     setRemoteImages: setImages,
     remoteImages: images,
+    countImagesInDb,
   } = useClientorContext();
-  const [url, setUrl] = useState("");
+  const { imagesValidate } = useClientorUserContext();
+  const [url, setUrl] = useState<string | undefined>(undefined);
 
   // CH
   const validateImage = useValidateImage();
+
+  // IVS
+  let reachedMaxImagesCount = countImagesInDb >= imagesValidate?.max!;
 
   return (
     <>
@@ -50,29 +56,41 @@ const RemoteImage = () => {
       </div>
       {images.length > 0 && (
         <div className="preview-imgs">
-          {images
-            .map((image) => {
-              return (
-                <>
-                  <RemoteImagePreviewer
-                    image={image}
-                    key={image.id}
-                    deleteImage={() => {
-                      setImages((prevImages) =>
-                        prevImages.filter((img) => img.id !== image.id)
-                      );
-                    }}
-                  />
-                </>
-              );
-            })}
+          {images.map((image) => {
+            return (
+              <>
+                <RemoteImagePreviewer
+                  image={image}
+                  key={image.id}
+                  deleteImage={() => {
+                    setImages((prevImages) =>
+                      prevImages.filter((img) => img.id !== image.id)
+                    );
+                  }}
+                />
+              </>
+            );
+          })}
         </div>
       )}
       <button
         className="btn"
         type="button"
         onClick={() => {
-          if (url !== "" && validateImage(url).verdict) {
+          /*
+            Only add this remote image if :
+            1. The url state is not undefined
+            2. The url state stores a string that's not an empty string
+            3. The maxium number of images allowed to be uploaded is not reached yet
+            4. The imag passes all the other checks
+          */
+
+          if (
+            url &&
+            url.trim() !== "" &&
+            !reachedMaxImagesCount &&
+            validateImage(url).verdict
+          ) {
             setImages((prevImgs) => {
               return [
                 ...prevImgs,
@@ -82,6 +100,7 @@ const RemoteImage = () => {
                 },
               ];
             });
+            setUrl(undefined);
           }
         }}
       >

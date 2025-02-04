@@ -3,6 +3,7 @@ import { useClientorContext } from "../../../lib/contexts/clientorContext";
 import { useClientorUserContext } from "../../../lib/contexts/clientorUserContext";
 import { useStorage } from "../../../lib/hooks";
 import connectDB from "../../../lib/storage/idb";
+import { connectToDb } from "../../../lib/storage/idb";
 
 const Textarea = () => {
   // STATES
@@ -15,10 +16,11 @@ const Textarea = () => {
     textAreaDivRef,
     editorType,
     htmlText,
+    setCountImagesInDb,
   } = useClientorContext();
 
   // CH
-  const { deleteImageFromStore } = useStorage({
+  const { deleteImageFromStore, emptyStore } = useStorage({
     handleError() {},
 
     handleIdbNotSupported() {},
@@ -37,8 +39,10 @@ const Textarea = () => {
 
   // EFFECTS
   useEffect(() => {
-    // Delete inserted images by double clicking on them
-    // DELETE FROM IDB DATABASE TOO
+    /*
+      Delete inserted images by double clicking on them
+      DELETE FROM IDB DATABASE TOO
+    */
 
     const textarea = textAreaDivRef.current;
 
@@ -49,41 +53,42 @@ const Textarea = () => {
       // Delete images on double click
       handleDbClick = function (event: MouseEvent) {
         const element = event.target as HTMLElement;
-        const elementStr = element.outerHTML; // .replaceAll(`"`, `\"`)
+        const elementStr = element.outerHTML;
 
         if (element.matches("img")) {
           let classname = element.className;
           let id = classname.split("-").at(-1);
 
-          connectDB().then((result) => {
-            if (result === "ERROR") {
-              return;
-            }
+          connectToDb.then((database) => {
+            /*
+              Check first in local images
+              because the user is more likely to want to remove locally selected images
+            */
+            deleteImageFromStore({ id, store: "local", database });
 
-            if (result === "NOT_SUPPORTED") {
-              return;
-            }
-
-            // Check first in local images
-            // because the user is more likely to want to remove locally selected images
-            deleteImageFromStore({ id, store: "local", database: result });
             // Then check in the remote images
-            deleteImageFromStore({ id, store: "remote", database: result });
+            deleteImageFromStore({ id, store: "remote", database });
           });
 
-          // Once the image deleted, we should remove it
-          // 1. From the DOM
+          /*
+            Once the image deleted, we should remove it
+            1. From the DOM
+          */
           element.remove();
-          // 2. From the state strings - Only the htmlText state
-          // because that's the one we use to display images
-          // in rtx. To delete an image in mdx, the user just has
-          // to remove the string from their markdown
+          /*
+            2. From the state strings - Only the htmlText state
+            because that's the one we use to display images
+            in rtx. To delete an image in mdx, the user just has
+            to remove the string from their markdown
+          */
           setHtmlText((prevText) => {
             // Remove the elementStr from prevText
             let match = htmlText.match(elementStr);
             if (!match) return prevText;
             return prevText.replaceAll(match[0], "");
           });
+
+          setCountImagesInDb((prev) => prev - 1);
         }
       };
 
@@ -111,6 +116,35 @@ const Textarea = () => {
     };
   }, [htmlText]);
 
+  useEffect(() => {
+    /*
+      Clear the temorary storage
+      in case the user load or reloads the page
+      so useless data don't get persisted to the database
+      forever (in case, for example, the user selected images,
+      didn't submit the form and reloaded their page.)
+
+      I wanted to put this effect in a context but kept
+      getting errors. It's properly working only in this component.
+    */
+    const connectToDb = connectDB().then((result) => {
+      if (result === "ERROR") {
+        return;
+      }
+
+      if (result === "NOT_SUPPORTED") {
+        return;
+      }
+
+      return result;
+    });
+
+    let handleClearTempStorageOnLoad = () => {
+      connectToDb.then((database) => emptyStore(database));
+    };
+
+    window.addEventListener("load", handleClearTempStorageOnLoad);
+  });
   return (
     <div
       id="textarea"

@@ -45,8 +45,11 @@ const LocalImagePreviewer = ({
 
 const LocalImage = () => {
   // STATES
-  const { setLocalImages: setImages, localImages: images } =
-    useClientorContext();
+  const {
+    setLocalImages: setImages,
+    localImages: images,
+    countImagesInDb,
+  } = useClientorContext();
   const imagesValidate = useClientorUserContext().imagesValidate;
 
   // RH
@@ -89,6 +92,8 @@ const LocalImage = () => {
             })
             // Only take the first images according to the max images option
             .slice(0, max!)
+            // Only the first images according to the number of images left to select
+            .slice(0, Math.abs(max! - countImagesInDb))
             .map((file) => {
               return {
                 file: file,

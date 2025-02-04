@@ -3,6 +3,7 @@ import { useClientorContext } from "./contexts/clientorContext";
 import { useStorage } from "./hooks";
 import { formatImage, formatLink } from "./utils";
 import { useClientorUserContext } from "./contexts/clientorUserContext";
+import ClientorDefaultConfiguration from "../clientor.config";
 
 export interface LinkDataType {
   link: string;
@@ -22,6 +23,7 @@ export default function useFunctionalities() {
     setLocalImages,
     setRemoteImages,
     setReferences,
+    countImagesInDb,
   } = useClientorContext();
 
   const { storeImage } = useStorage({
@@ -34,9 +36,28 @@ export default function useFunctionalities() {
     },
   });
 
+  /*
+    Merge the option values passed through the context provider
+    with the default option values.
+  */
   const {
-    references: { formatURL, request, label: refLabel, id: refId },
-  } = useClientorUserContext();
+    formatURL,
+    request,
+    label: refLabel,
+    id: refId,
+  } = Object.assign(
+    useClientorUserContext().references || {},
+    ClientorDefaultConfiguration.referenceOptions
+  );
+
+  /*
+    Merge the option values passed through the context provider
+    with the default option values.
+  */
+  const { max: maxImagesCount } = Object.assign(
+    useClientorUserContext().imagesValidate || {},
+    ClientorDefaultConfiguration.imagesValidate
+  );
   const [refs, setRefs] = useState<any[]>([]);
   const [updatingRefsState, startTransition] = useTransition();
   const [loadingRefs, setLoadingRefs] = useState<"idle" | "loading" | "error">(
@@ -180,11 +201,16 @@ export default function useFunctionalities() {
       },
 
       // This function is the one being called when the user clicks on insert button
-      handleFeature: (event: React.FormEvent<HTMLFormElement>) => {
+      handleFeature: async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        // Return if no image has been selected when user clicks insert
         if (localImages.length === 0 && remoteImages.length === 0) return;
 
+        // Return if the max count of images stored in idb has been reached
+        if (countImagesInDb >= maxImagesCount!) {
+          return;
+        }
         const textarea = textAreaDivRef.current;
 
         if (!textarea) return;
@@ -223,6 +249,8 @@ export default function useFunctionalities() {
         setLocalImages([]);
         setRemoteImages([]);
 
+        // Add
+
         event.currentTarget.reset();
       },
     },
@@ -254,14 +282,20 @@ export default function useFunctionalities() {
           searchInput.value = "";
         }
 
-        // Search for the ref that correspond to this id
-        // and then pass the object to a function that will
-        // be provided by the user, so we get back a URL
-        // that's formatted to match a record or a document
-        // in the backend.
+        /*
+          Search for the ref that correspond to this id
+          and then pass the object to a function that will
+          be provided by the user, so we get back a URL
+          that's formatted to match a record or a document
+          in the backend.
+        */
         const foundRef = refs.find(
-          (_ref) => (_ref as any)[refId] === id
+          (_ref) => (_ref as any)[refId!] === id
         ) as any;
+
+        if (!foundRef) {
+          return;
+        }
 
         if (!foundRef["absolute_url"] && !formatURL) {
           const error = new Error();
@@ -271,13 +305,13 @@ export default function useFunctionalities() {
           throw error;
         }
 
-        let absolute_url =
-          (foundRef as any)["absolute_url"] || formatURL!(foundRef);
+        let absolute_url = ((foundRef as any)["absolute_url"] ||
+          formatURL!(foundRef)) as string;
 
         // Insert the reference in the document flow
         const { mdx, rtx } = formatLink({
-          link: absolute_url,
-          label: `@${foundRef[refLabel]}`,
+          link: absolute_url.trim().replaceAll(" ", ""),
+          label: `@${foundRef[refLabel!]}`,
           target: "blank",
         });
 
@@ -294,7 +328,7 @@ export default function useFunctionalities() {
             setHtmlText((prev) => prev.concat(` ${rtx()}`));
             setRawText((prev) => {
               return prev.concat(
-                ` ${`@${foundRef[refLabel]}` || absolute_url}`
+                ` ${`@${foundRef[refLabel!]}` || absolute_url}`
               );
             });
             break;
@@ -307,7 +341,7 @@ export default function useFunctionalities() {
         );
 
         // Store the reference id in a state
-        setReferences((prev) => [...prev, foundRef[refId]]);
+        setReferences((prev) => [...prev, foundRef[refId!]]);
       },
       getRefs: async (event: React.ChangeEvent<HTMLInputElement>) => {
         // For debouncing purpose, reset the timeout
@@ -320,23 +354,29 @@ export default function useFunctionalities() {
           return;
         }
 
-        // Request the refs after 3 seconds of non typing
-        // **ISSUE** : Instead of being called once
-        // the callback is being called twice.
+        /*
+          Request the refs after 3 seconds of non typing
+          **ISSUE** : Instead of being called once
+          the callback is being called twice.
+        */
         timer = setTimeout(() => {
-          // Set the loading state to true
-          // so we can display a feedback to the user
-          // indicating that a request is on its way
+          /*
+            Set the loading state to true
+            so we can display a feedback to the user
+            indicating that a request is on its way
+          */
           setLoadingRefs("loading");
 
-          // This function to request for references
-          // will be provided by the user
-          // through the context. It must return a Promise
-          // that resolves to an array (even if it's one element).
-          // Normally, this would be function to request
-          // some data from the database, based on the
-          // search hint and then return it. Or maybe it would
-          // return an array stored as a state.
+          /*
+            This function to request for references
+            will be provided by the user
+            through the context. It must return a Promise
+            that resolves to an array (even if it's one element).
+            Normally, this would be function to request
+            some data from the database, based on the
+            search hint and then return it. Or maybe it would
+            return an array stored as a state.
+          */
           request(hint)
             .then(function (_refs) {
               startTransition(() => {

@@ -56,6 +56,9 @@ interface ClientorContexttype {
 
   idb: IDBDatabase | null;
   setIdb: React.Dispatch<React.SetStateAction<IDBDatabase | null>>;
+
+  countImagesInDb: number;
+  setCountImagesInDb: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const ClientorContext = createContext<ClientorContexttype | null>(null);
@@ -77,6 +80,7 @@ export const ClientorContextProvider = ({
   const [editModes, setEditMode] = useState<EditMode[]>(["none"]);
   const [editorType, setEditorType] = useState<EditorType>("rtx");
   const [idb, setIdb] = useState<IDBDatabase | null>(null);
+  const [countImagesInDb, setCountImagesInDb] = useState(0);
   const textAreaDivRef = useRef<HTMLDivElement | null>(null);
   const previewDivRef = useRef<HTMLDivElement | null>(null);
 
@@ -99,6 +103,8 @@ export const ClientorContextProvider = ({
     previewDivRef,
     idb,
     setIdb,
+    countImagesInDb,
+    setCountImagesInDb,
   };
 
   useEffect(() => {
@@ -107,9 +113,11 @@ export const ClientorContextProvider = ({
     if (textarea) {
       document.addEventListener("selectionchange", function () {
         if (window.getSelection()?.isCollapsed) {
-          // This is the place where we could
-          // unnaply all the styles, in case the user
-          // has unfocused or finished typing
+          /*
+            This is the place where we could
+            unnaply all the styles, in case the user
+            has unfocused or finished typing
+          */
           return;
         }
       });

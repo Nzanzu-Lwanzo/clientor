@@ -19,14 +19,22 @@ export interface ImagesValidateOptionsType {
   local?: LocalImagesValidateOptionsType;
 }
 
+/*
+  The user must either provide the formatLink function
+  or include a absolute_url property in each object.
+  If they provide both, the absolute_url value
+  will prime over the return value of the formatLink function
+*/
+export interface ReferencesOptionsType {
+  request: (hint: string) => Promise<any[]>;
+  label?: string;
+  formatURL?: (_ref: unknown) => string;
+  id?: string;
+}
+
 export interface ClientorUserContextType {
   handleSubmit: (data: ClientorBoxReturnType) => boolean;
-  references: {
-    request: (hint: string) => Promise<any[]>;
-    label: string;
-    formatURL?: (_ref: unknown) => string;
-    id: string;
-  };
+  references: ReferencesOptionsType;
   maxContentLength?: {
     value: number;
     handler: () => void;

@@ -94,6 +94,10 @@
   stroke: var(--standout);
 }
 
+input:disabled::placeholder {
+  opacity: 0;
+}
+
 .icon-btn-container {
   position: relative;
 }
@@ -172,6 +176,16 @@
     align-items: center;
     justify-content: flex-start;
     gap: 0.5rem;
+  }
+
+  .bulb {
+    font-size: .75rem;
+    display: inline-block;
+    padding: .2rem .4rem;
+    font-weight: bold;
+    border: 1px solid var(--standout);
+    color: var(--standout);
+    border-radius: 20px;
   }
 
   .span-btn {
@@ -363,7 +377,7 @@
 
 #clientor-main-container #textarea #text {
   width: 100%;
-  height: fit-content;
+  height: 100%;
   resize: none;
   padding: 1rem;
   font-size: 0.95rem;
