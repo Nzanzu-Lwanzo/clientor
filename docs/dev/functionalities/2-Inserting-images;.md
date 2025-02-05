@@ -44,7 +44,7 @@ type LocalImageType = {
   - The images will be stored in an **indexedDb** database so they can be fetched later and preserve their integrity.
   - The images will be formatted into strings to be :
 
-    - Concatenated to the **rawText** and/or the **htmlText** state.
+    - Concatenated to the **rawText**
     - Concatenated to the innerHTML of the textarea box so images can be displayed.
 
   - The state that stored the images array will be emptied out.
@@ -56,8 +56,6 @@ type LocalImageType = {
   - The string corresponding to this image will be removed from :
 
     - The textarea box innerHTML
-    - The rawText state
-    - The htmlText state
 
 - When clicking on the send button :
   - All images present in the indexedDb will be fetched

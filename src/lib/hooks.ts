@@ -18,15 +18,8 @@ interface HookParamsType {
 }
 
 export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
-  const {
-    rawText,
-    htmlText,
-    editorType,
-    textAreaDivRef,
-    setRawText,
-    setHtmlText,
-    references,
-  } = useClientorContext();
+  const { rawText, editorType, textAreaDivRef, setRawText, references } =
+    useClientorContext();
 
   const { minContentLength, maxContentLength, playSounds } =
     useClientorUserContext();
@@ -63,9 +56,9 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
       */
       const localImgs = (await getImages("local")) as LocalImageType[];
       const remoteImgs = (await getImages("remote")) as RemoteImageType[];
+      const html = textAreaDivRef.current!.innerHTML;
       let successfullyHandled = handleSubmit({
-        html:
-          editorType !== "rtx" ? (marked.parse(htmlText) as string) : htmlText,
+        html: editorType !== "rtx" ? (marked.parse(html) as string) : html,
         raw: rawText,
         localImages: localImgs.map((img) => img.file),
         remoteImages: remoteImgs.map((img) => img.url),
@@ -87,7 +80,6 @@ export const useHandleSubmission = ({ handleSubmit }: HookParamsType) => {
         if (textAreaDivRef.current) {
           textAreaDivRef.current.innerHTML = "";
           setRawText("");
-          setHtmlText("");
 
           // Delete the images temporarily stored in the idb database
           emptyStore();

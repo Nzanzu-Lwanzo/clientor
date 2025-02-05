@@ -15,7 +15,6 @@ export default function useFunctionalities() {
   const {
     setEditMode,
     textAreaDivRef,
-    setHtmlText,
     setRawText,
     editorType,
     localImages,
@@ -24,9 +23,10 @@ export default function useFunctionalities() {
     setRemoteImages,
     setReferences,
     countImagesInDb,
+    setCountImagesInDb,
   } = useClientorContext();
 
-  const { storeImage } = useStorage({
+  const { storeImage, emptyStore } = useStorage({
     handleError() {
       console.log("error");
     },
@@ -115,9 +115,13 @@ export default function useFunctionalities() {
       handleFeature: () => {
         if (textAreaDivRef.current) {
           textAreaDivRef.current.innerHTML = "";
-          setHtmlText("");
           setRawText("");
         }
+
+        // Delete all images from the temporary store
+        // and reset the state counter of idb stored images
+        emptyStore();
+        setCountImagesInDb(0);
       },
     },
 
@@ -160,14 +164,12 @@ export default function useFunctionalities() {
         switch (editorType) {
           case "mdx": {
             textarea.innerHTML += ` ${mdx}`;
-            setHtmlText((prev) => prev.concat(` ${rtx()}`));
             setRawText((prev) => prev.concat(` ${mdx}`));
             break;
           }
 
           case "rtx": {
             textarea.innerHTML += ` ${rtx()}`;
-            setHtmlText((prev) => prev.concat(` ${rtx()}`));
             setRawText((prev) => {
               return prev.concat(` ${linkData.label || linkData.link}`);
             });
@@ -222,19 +224,10 @@ export default function useFunctionalities() {
           })
           .join(" ");
 
+        // This is for rtx
         textarea.innerHTML += " ".concat(imagesEltString, "<br/><br/>");
-
-        switch (editorType) {
-          case "mdx": {
-            setRawText((prevText) => `${prevText} ${imagesEltString}`);
-            break;
-          }
-
-          case "rtx": {
-            setHtmlText((prevText) => `${prevText} ${imagesEltString}`);
-            break;
-          }
-        }
+        // This is for mdx
+        setRawText((prevText) => `${prevText} ${imagesEltString}`);
 
         // Hide the floating card
         setEditMode((prevModes) =>
@@ -318,14 +311,12 @@ export default function useFunctionalities() {
         switch (editorType) {
           case "mdx": {
             textarea.innerHTML += ` ${mdx}`;
-            setHtmlText((prev) => prev.concat(` ${rtx()}`));
             setRawText((prev) => prev.concat(` ${mdx}`));
             break;
           }
 
           case "rtx": {
             textarea.innerHTML += ` ${rtx()}`;
-            setHtmlText((prev) => prev.concat(` ${rtx()}`));
             setRawText((prev) => {
               return prev.concat(
                 ` ${`@${foundRef[refLabel!]}` || absolute_url}`

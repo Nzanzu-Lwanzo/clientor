@@ -12,10 +12,8 @@ const Textarea = () => {
   const {
     setRawText,
     rawText,
-    setHtmlText,
     textAreaDivRef,
     editorType,
-    htmlText,
     setCountImagesInDb,
   } = useClientorContext();
 
@@ -29,8 +27,6 @@ const Textarea = () => {
   // FEH
   const handleTyping = useCallback((event: React.FormEvent<HTMLDivElement>) => {
     setRawText(event.currentTarget.innerText);
-    let innerHTML = event.currentTarget.innerHTML;
-    setHtmlText(innerHTML);
 
     if (maxContentLength && rawText.length >= maxContentLength.value) {
       maxContentLength?.handler();
@@ -53,7 +49,6 @@ const Textarea = () => {
       // Delete images on double click
       handleDbClick = function (event: MouseEvent) {
         const element = event.target as HTMLElement;
-        const elementStr = element.outerHTML;
 
         if (element.matches("img")) {
           let classname = element.className;
@@ -75,19 +70,6 @@ const Textarea = () => {
             1. From the DOM
           */
           element.remove();
-          /*
-            2. From the state strings - Only the htmlText state
-            because that's the one we use to display images
-            in rtx. To delete an image in mdx, the user just has
-            to remove the string from their markdown
-          */
-          setHtmlText((prevText) => {
-            // Remove the elementStr from prevText
-            let match = htmlText.match(elementStr);
-            if (!match) return prevText;
-            return prevText.replaceAll(match[0], "");
-          });
-
           setCountImagesInDb((prev) => prev - 1);
         }
       };
@@ -114,7 +96,7 @@ const Textarea = () => {
         textarea.removeEventListener("touchstart", handleOpenLinkOnClick);
       }
     };
-  }, [htmlText]);
+  }, []);
 
   useEffect(() => {
     /*
@@ -156,7 +138,6 @@ const Textarea = () => {
         onInput={handleTyping}
         ref={textAreaDivRef}
         autoFocus
-        aria-placeholder="Write your text here ..."
       ></div>
     </div>
   );

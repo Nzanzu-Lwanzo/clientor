@@ -32,9 +32,6 @@ interface ClientorContexttype {
   rawText: string;
   setRawText: React.Dispatch<React.SetStateAction<string>>;
 
-  htmlText: string;
-  setHtmlText: React.Dispatch<React.SetStateAction<string>>;
-
   localImages: LocalImageType[];
   setLocalImages: React.Dispatch<React.SetStateAction<LocalImageType[]>>;
 
@@ -73,7 +70,6 @@ export const ClientorContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [rawText, setRawText] = useState("");
-  const [htmlText, setHtmlText] = useState("");
   const [localImages, setLocalImages] = useState<LocalImageType[]>([]);
   const [remoteImages, setRemoteImages] = useState<RemoteImageType[]>([]);
   const [references, setReferences] = useState<(string | number)[]>([]);
@@ -87,8 +83,6 @@ export const ClientorContextProvider = ({
   const value: ClientorContexttype = {
     rawText,
     setRawText,
-    htmlText,
-    setHtmlText,
     references,
     setReferences,
     localImages,
