@@ -27,6 +27,14 @@ export type RemoteImageType = {
   id: string;
 };
 
+export type SelectedDataType =
+  | {
+      selectedText: string;
+      selectionStartPosition: number;
+      selectionEndPosition: number;
+    }
+  | undefined;
+
 interface ClientorContexttype {
   // To be returned to the user
   rawText: string;
@@ -106,7 +114,9 @@ export const ClientorContextProvider = ({
 
     if (textarea) {
       document.addEventListener("selectionchange", function () {
-        if (window.getSelection()?.isCollapsed) {
+        if (!this.getSelection()?.isCollapsed) {
+          // Do something
+        } else {
           /*
             This is the place where we could
             unnaply all the styles, in case the user

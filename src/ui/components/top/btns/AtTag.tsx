@@ -1,40 +1,45 @@
-import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { AtSign } from "lucide-react";
 import Loader from "../../_general/Loader";
 import { useRef } from "react";
 import { useClientorUserContext } from "../../../../lib/contexts/clientorUserContext";
-
-export type MockUser = { id: number; name: string };
+import useReference from "../../../../lib/functionalities/references";
+import ClientorDefaultConfiguration from "../../../../clientor.config";
 
 const LiElement = ({
-  _ref,
+  label,
   onClick,
 }: {
-  _ref: unknown;
+  label: string;
   onClick: (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 }) => {
-  const {
-    references: { label: refLabel },
-  } = useClientorUserContext();
-  return <li onClick={onClick}>@{(_ref as any)[refLabel!]}</li>;
+  return <li onClick={onClick}>@{label}</li>;
 };
 
 const AtTag = () => {
+  // STATE
+
+  /*
+    Merge the option values passed through the context provider
+    with the default option values.
+  */
+  const { label: refLabel } = Object.assign(
+    ClientorDefaultConfiguration.referenceOptions,
+    useClientorUserContext().references || {}
+  );
+
   // RH
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   // CH
   const {
-    reference: {
-      toggler,
-      getRefs,
-      refs,
-      handleFeature,
-      loadingRefs,
-      updatingRefsState,
-    },
-  } = useFunctionalities();
+    toggler,
+    getRefs,
+    refs,
+    handleFeature,
+    loadingRefs,
+    updatingRefsState,
+  } = useReference();
 
   return (
     <IconBtn type="button" handleClick={toggler} editMode="$reference">
@@ -63,14 +68,14 @@ const AtTag = () => {
                 refs.map((_ref) => {
                   return (
                     <LiElement
-                      key={(_ref as MockUser).id}
+                      key={(_ref as any).id}
                       onClick={() => {
                         handleFeature(
-                          (_ref as MockUser).id,
+                          (_ref as any).id,
                           searchInputRef.current
                         );
                       }}
-                      _ref={_ref}
+                      label={_ref[refLabel!]}
                     />
                   );
                 })

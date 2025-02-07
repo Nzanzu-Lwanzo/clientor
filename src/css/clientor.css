@@ -110,12 +110,16 @@ input:disabled::placeholder {
   cursor: pointer;
   background-color: transparent;
 
-  &.active > svg {
-    stroke: var(--accent);
+  &.active,
+  &:hover {
+    & > svg {
+      stroke: var(--accent);
+    }
   }
 
   &.active,
-  &:hover {
+  &:hover,
+  &:active {
     background-color: var(--iconBtn-bg);
   }
 }
@@ -179,9 +183,9 @@ input:disabled::placeholder {
   }
 
   .bulb {
-    font-size: .75rem;
+    font-size: 0.75rem;
     display: inline-block;
-    padding: .2rem .4rem;
+    padding: 0.2rem 0.4rem;
     font-weight: bold;
     border: 1px solid var(--standout);
     color: var(--standout);

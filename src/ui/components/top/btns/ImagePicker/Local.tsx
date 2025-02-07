@@ -55,8 +55,8 @@ const LocalImage = () => {
   // RH
   const { max } = useMemo(() => {
     return Object.assign(
-      imagesValidate || {},
-      ClientorDefaultConfiguration.imagesValidate
+      ClientorDefaultConfiguration.imagesValidate,
+      imagesValidate || {}
     );
   }, []);
 

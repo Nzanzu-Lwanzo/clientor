@@ -1,12 +1,10 @@
-import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Italic as ItalicIcon } from "lucide-react";
+import useItalic from "../../../../lib/functionalities/italic";
 
 const Italic = () => {
   // CH
-  const {
-    italic: { toggler },
-  } = useFunctionalities();
+  const { toggler } = useItalic();
 
   return (
     <IconBtn handleClick={toggler} editMode="italic" type="button">

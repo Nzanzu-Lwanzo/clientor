@@ -6,10 +6,36 @@ export function getSelectionData() {
   }
 
   if (selection) {
+    /*
+      selection.anchorOffset alias "aof" is where the selection starts
+      selection.focusOffset alias "fof" is where the selection ends.
+
+      If you select from the end of the word to its start,
+      aof will be > to fof.
+
+      If you select from the beginning of a word to its end,
+      fof will be > to aof.
+
+      In case, we want the start index to be < to the end index,
+      that's why we compare those values below using 
+      the Math.max and Math.min
+
+    */
     let selectionStartPosition = selection.anchorOffset;
     let selectionEndPosition = selection.focusOffset;
+
     let selectedText = selection.toString();
-    return { selectedText, selectionStartPosition, selectionEndPosition };
+    return {
+      selectedText,
+      selectionStartPosition: Math.min(
+        selectionStartPosition,
+        selectionEndPosition
+      ),
+      selectionEndPosition: Math.max(
+        selectionStartPosition,
+        selectionEndPosition
+      ),
+    };
   }
 }
 

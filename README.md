@@ -22,9 +22,9 @@ All the code lives inside of the src folder which contains three subfolders.
 
    This is the folder where live the components and only the components. The main component exposed by the package lives in this file : [ClientorBox.tsx](src/ui/ClientorBox.tsx)
 
-4. #### useFunctionalities
+4. #### functionalities
 
-   This is **one** of the core files of the package. It exposes a unique [hook](src/lib/useFunctionalities.ts) that handles all the functionalities of the component from toggling the visibility of the buttons to inserting or formatting. That's the place to define the behavior of the different features of the component.
+   This is **one** of the core folders of the package. [It contains files that expose each a hook](src\lib\functionalities) that handles all the functionalities of the component from toggling the visibility of the buttons to inserting or formatting. That's the place to define the behavior of the different features of the component.
 
 5. #### clientor.config.ts
 

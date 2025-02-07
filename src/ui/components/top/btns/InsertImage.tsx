@@ -1,5 +1,4 @@
 import { useState } from "react";
-import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Image } from "lucide-react";
 import { Cloud, Computer } from "lucide-react";
@@ -7,6 +6,7 @@ import RemoteImage from "./ImagePicker/Remote";
 import LocalImage from "./ImagePicker/Local";
 import { useClientorUserContext } from "../../../../lib/contexts/clientorUserContext";
 import { useClientorContext } from "../../../../lib/contexts/clientorContext";
+import useInsertImages from "../../../../lib/functionalities/insertImages";
 
 const InsertImage = () => {
   // STATES
@@ -15,9 +15,7 @@ const InsertImage = () => {
   const { countImagesInDb } = useClientorContext();
 
   // CH
-  const {
-    insertImage: { toggler, handleFeature },
-  } = useFunctionalities();
+  const { toggler, handleFeature } = useInsertImages();
 
   // IVS
   let reachedMaxImagesCount = countImagesInDb >= imagesValidate?.max!;

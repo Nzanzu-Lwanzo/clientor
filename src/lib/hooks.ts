@@ -120,8 +120,8 @@ export const useValidateImage = () => {
     remote: remoteOptions,
     max,
   } = Object.assign(
-    useClientorUserContext().imagesValidate || {},
-    ClientorDefaultConfiguration.imagesValidate
+    ClientorDefaultConfiguration.imagesValidate,
+    useClientorUserContext().imagesValidate || {}
   );
 
   const { localImages, remoteImages } = useClientorContext();

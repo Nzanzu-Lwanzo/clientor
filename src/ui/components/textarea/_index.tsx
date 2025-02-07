@@ -76,10 +76,10 @@ const Textarea = () => {
 
       // Open a link when the user clicks on a tag
       handleOpenLinkOnClick = function (event: MouseEvent | TouchEvent) {
-        event.preventDefault();
         const anchorTag = event.target as HTMLAnchorElement;
 
         if (anchorTag.matches("a")) {
+          event.preventDefault();
           window.open(anchorTag.href);
         }
       };
@@ -126,7 +126,8 @@ const Textarea = () => {
     };
 
     window.addEventListener("load", handleClearTempStorageOnLoad);
-  });
+  }, []);
+
   return (
     <div
       id="textarea"

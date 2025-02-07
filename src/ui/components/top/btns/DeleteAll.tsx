@@ -1,12 +1,10 @@
-import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Delete } from "lucide-react";
+import useDeleteAll from "../../../../lib/functionalities/deleteAll";
 
 const DeleteAll = () => {
   // CH
-  const {
-    deleteAll: { handleFeature },
-  } = useFunctionalities();
+  const { handleFeature } = useDeleteAll();
 
   return (
     <IconBtn handleClick={handleFeature} type="button">

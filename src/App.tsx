@@ -1,7 +1,8 @@
 import ClientorBox from "./ui/ClientorBox";
 import { ClientorContextProvider } from "./lib/contexts/clientorContext";
 import ClientorUserProvider from "./lib/contexts/clientorUserContext";
-import { MockUser } from "./ui/components/top/btns/AtTag";
+
+type MockUser = { id: number; name: string };
 
 function App() {
   return (

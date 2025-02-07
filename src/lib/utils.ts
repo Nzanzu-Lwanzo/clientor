@@ -78,3 +78,40 @@ gotten from outerHTML of the DOM element, the strings won't match.
 
 So, please, no matter what, never self close the orphan tags.
 */
+
+export const styleThis = ({
+  text,
+  style,
+  className,
+}: {
+  text: string;
+  style: "bold" | "italic" | "underline";
+  className?: string;
+  id?: string;
+}) => {
+  switch (style) {
+    case "bold": {
+      const boldString = ` <strong class="${
+        className || "clientor-bold"
+      }">${text}</strong>`;
+
+      return boldString;
+    }
+  }
+};
+
+export const replaceSubstring = ({
+  text,
+  start,
+  end,
+  replaceBy,
+}: {
+  text: string;
+  start: number;
+  end: number;
+  replaceBy: string;
+}) => {
+
+  let str = text.slice(0, start) + replaceBy + text.slice(end);
+  return str  
+};

@@ -1,12 +1,10 @@
-import useFunctionalities from "../../../../lib/useFunctionalities";
 import IconBtn from "../../_general/IconBtn";
 import { Link } from "lucide-react";
+import useInsertLinks from "../../../../lib/functionalities/insertLinks";
 
 const InsertLink = () => {
   // CH
-  const {
-    insertLink: { toggler, handleFeature },
-  } = useFunctionalities();
+  const { toggler, handleFeature } = useInsertLinks();
 
   return (
     <IconBtn type="button" handleClick={toggler} editMode="$ins_link">
