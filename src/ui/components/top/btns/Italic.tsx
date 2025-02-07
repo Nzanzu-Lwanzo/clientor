@@ -1,13 +1,27 @@
 import IconBtn from "../../_general/IconBtn";
 import { Italic as ItalicIcon } from "lucide-react";
-import useItalic from "../../../../lib/functionalities/italic";
+import useItalic from "../../../../lib/functionalities/stylers/italic";
+import { useClientorContext } from "../../../../lib/contexts/clientorContext";
 
 const Italic = () => {
+  // STATES
+  const { editModes } = useClientorContext();
+
   // CH
-  const { toggler } = useItalic();
+  const { toggler, handleFeature } = useItalic();
 
   return (
-    <IconBtn handleClick={toggler} editMode="italic" type="button">
+    <IconBtn
+      handleClick={() => {
+        if (!editModes.includes("bold")) {
+          handleFeature();
+        }
+
+        toggler();
+      }}
+      editMode="italic"
+      type="button"
+    >
       <ItalicIcon size={19} />
     </IconBtn>
   );

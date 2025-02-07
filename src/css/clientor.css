@@ -111,7 +111,7 @@ input:disabled::placeholder {
   background-color: transparent;
 
   &.active,
-  &:hover {
+  &:active {
     & > svg {
       stroke: var(--accent);
     }

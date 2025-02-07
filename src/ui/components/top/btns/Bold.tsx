@@ -1,7 +1,7 @@
 import { useClientorContext } from "../../../../lib/contexts/clientorContext";
 import IconBtn from "../../_general/IconBtn";
 import { Bold as BoldIcon } from "lucide-react";
-import useBold from "../../../../lib/functionalities/bold";
+import useBold from "../../../../lib/functionalities/stylers/bold";
 
 const Bold = () => {
   // STATES

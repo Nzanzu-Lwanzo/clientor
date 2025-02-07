@@ -70,10 +70,7 @@ const AtTag = () => {
                     <LiElement
                       key={(_ref as any).id}
                       onClick={() => {
-                        handleFeature(
-                          (_ref as any).id,
-                          searchInputRef.current
-                        );
+                        handleFeature((_ref as any).id, searchInputRef.current);
                       }}
                       label={_ref[refLabel!]}
                     />

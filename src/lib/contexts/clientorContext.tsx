@@ -1,7 +1,6 @@
 import React, {
   createContext,
   useContext,
-  useEffect,
   useRef,
   useState,
 } from "react";
@@ -108,25 +107,6 @@ export const ClientorContextProvider = ({
     countImagesInDb,
     setCountImagesInDb,
   };
-
-  useEffect(() => {
-    const textarea = textAreaDivRef.current;
-
-    if (textarea) {
-      document.addEventListener("selectionchange", function () {
-        if (!this.getSelection()?.isCollapsed) {
-          // Do something
-        } else {
-          /*
-            This is the place where we could
-            unnaply all the styles, in case the user
-            has unfocused or finished typing
-          */
-          return;
-        }
-      });
-    }
-  }, []);
 
   return (
     <ClientorContext.Provider value={value}>
