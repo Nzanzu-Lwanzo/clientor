@@ -1,5 +1,5 @@
 import { useClientorContext } from "../../contexts/clientorContext";
-import useSTYLE from "./_core_";
+import useSTYLE from "./core/hook";
 
 export default function useUnderline() {
   const { setEditMode } = useClientorContext();

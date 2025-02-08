@@ -2,7 +2,7 @@ import { useClientorContext } from "../contexts/clientorContext";
 import { useState, useTransition } from "react";
 import { useClientorUserContext } from "../contexts/clientorUserContext";
 import ClientorDefaultConfiguration from "../../clientor.config";
-import { formatLink } from "../utils";
+import { formatLink } from "../helpers/formatters";
 
 export default function useReference() {
   const { setEditMode, textAreaDivRef, setRawText, editorType, setReferences } =
@@ -17,8 +17,8 @@ export default function useReference() {
     label: refLabel,
     id: refId,
   } = Object.assign(
-    ClientorDefaultConfiguration.referenceOptions,
-    useClientorUserContext().references || {}
+    useClientorUserContext().references || {},
+    ClientorDefaultConfiguration.referenceOptions
   );
 
   const [refs, setRefs] = useState<any[]>([]);

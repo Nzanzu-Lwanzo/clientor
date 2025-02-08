@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from "react";
 import { useClientorContext } from "../../../lib/contexts/clientorContext";
 import { useClientorUserContext } from "../../../lib/contexts/clientorUserContext";
-import { useStorage } from "../../../lib/hooks";
 import connectDB from "../../../lib/storage/idb";
 import { connectToDb } from "../../../lib/storage/idb";
+import useStorage from "../../../lib/hooks/useStorage";
+import { getImageIDFromDOM } from "../../../lib/helpers/getters";
 
 const Textarea = () => {
   // STATES
@@ -51,8 +52,8 @@ const Textarea = () => {
         const element = event.target as HTMLElement;
 
         if (element.matches("img")) {
-          let classname = element.className;
-          let id = classname.split("-").at(-1);
+
+          let id = getImageIDFromDOM(element as HTMLImageElement);
 
           connectToDb.then((database) => {
             /*

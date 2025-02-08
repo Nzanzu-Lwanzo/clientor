@@ -24,8 +24,8 @@ const AtTag = () => {
     with the default option values.
   */
   const { label: refLabel } = Object.assign(
-    ClientorDefaultConfiguration.referenceOptions,
-    useClientorUserContext().references || {}
+    useClientorUserContext().references || {},
+    ClientorDefaultConfiguration.referenceOptions
   );
 
   // RH

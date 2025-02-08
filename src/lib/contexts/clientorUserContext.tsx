@@ -1,6 +1,6 @@
 import { useContext, createContext, PropsWithChildren } from "react";
 import { CSSProperties } from "react";
-import { ClientorBoxReturnType } from "../types";
+import { ClientorBoxReturnType } from "../types/types";
 
 export interface RemoteImagesValidateOptionsType {
   allowHttpImages: boolean;

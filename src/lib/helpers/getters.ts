@@ -63,21 +63,13 @@ export function getElementWithNewTag({
   }
 }
 
-export function bytesToMB(bytes: number) {
-  return bytes / (1024 * 1024);
-}
+export const getImageURL = (file: File) => {
+  return URL.createObjectURL(file);
+};
 
-export function validateURL(url: string, schema: "http" | "https") {
-  const httpsRegex = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(:\d+)?(\/[^\s]*)?$/i;
-  const httpRegex = /^(http?:\/\/)?([\w-]+(\.[\w-]+)+)(:\d+)?(\/[^\s]*)?$/i;
+export const getImageIDFromDOM = (image: HTMLImageElement) => {
+  let classname = image.className;
+  let id = classname.split("-").at(-1);
 
-  switch (schema) {
-    case "https": {
-      return httpsRegex.test(url);
-    }
-
-    case "http": {
-      return httpRegex.test(url);
-    }
-  }
-}
+  return id;
+};

@@ -1,8 +1,8 @@
 import { useClientorContext } from "../contexts/clientorContext";
-import { useStorage } from "../hooks";
+import useStorage from "../hooks/useStorage";
 import ClientorDefaultConfiguration from "../../clientor.config";
 import { useClientorUserContext } from "../contexts/clientorUserContext";
-import { formatImage } from "../utils";
+import { formatImage } from "../helpers/formatters";
 
 export default function useInsertImages() {
   const {
@@ -32,8 +32,8 @@ export default function useInsertImages() {
     with the default option values.
   */
   const { max: maxImagesCount } = Object.assign(
+    useClientorUserContext().imagesValidate || {},
     ClientorDefaultConfiguration.imagesValidate,
-    useClientorUserContext().imagesValidate || {}
   );
 
   return {

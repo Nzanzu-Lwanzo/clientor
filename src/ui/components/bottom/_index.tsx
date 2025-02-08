@@ -5,7 +5,7 @@ import { useClientorContext } from "../../../lib/contexts/clientorContext";
 import { memo } from "react";
 import { useClientorUserContext } from "../../../lib/contexts/clientorUserContext";
 import ClientorDefaultConfiguration from "../../../clientor.config";
-import { useHandleSubmission } from "../../../lib/hooks";
+import useHandleSubmission from "../../../lib/hooks/useHandleSubmission";
 
 const Bottom = memo(() => {
   // STATES

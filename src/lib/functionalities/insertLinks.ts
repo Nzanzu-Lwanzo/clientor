@@ -1,5 +1,5 @@
 import { useClientorContext } from "../contexts/clientorContext";
-import { formatLink } from "../utils";
+import { formatLink } from "../helpers/formatters";
 
 export interface LinkDataType {
   link: string;

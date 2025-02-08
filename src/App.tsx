@@ -8,7 +8,7 @@ function App() {
   return (
     <ClientorUserProvider
       handleSubmit={(data) => {
-        console.log(data);
+        console.log(data)
         return data.raw !== "" && data.raw.length > 0;
       }}
       maxContentLength={{

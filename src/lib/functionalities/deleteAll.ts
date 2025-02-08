@@ -1,5 +1,5 @@
 import { useClientorContext } from "../contexts/clientorContext";
-import { useStorage } from "../hooks";
+import useStorage from "../hooks/useStorage";
 
 export default function useDeleteAll() {
   const { textAreaDivRef, setRawText, setCountImagesInDb } =

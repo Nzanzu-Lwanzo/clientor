@@ -1,4 +1,4 @@
-import { useClientorContext } from "../../contexts/clientorContext";
+import { useClientorContext } from "../../../contexts/clientorContext";
 import { useEffect, useState } from "react";
 
 type StyleType = "bold" | "underline" | "italic";

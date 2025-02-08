@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { LocalImageType } from "../../../../../lib/contexts/clientorContext";
 import { useClientorContext } from "../../../../../lib/contexts/clientorContext";
 import { nanoid } from "nanoid";
-import { useValidateImage } from "../../../../../lib/hooks";
+import useValidateImage from "../../../../../lib/hooks/useValidateImage";
 import { useClientorUserContext } from "../../../../../lib/contexts/clientorUserContext";
 import ClientorDefaultConfiguration from "../../../../../clientor.config";
 

@@ -1,9 +1,9 @@
-import { LocalImageType, RemoteImageType } from "./contexts/clientorContext";
+import { LocalImageType, RemoteImageType } from "../contexts/clientorContext";
 
 export interface ClientorBoxReturnType {
   raw: string;
   html: string;
-  localImages: LocalImageType["file"][];
+  localImages: LocalImageType[];
   remoteImages: RemoteImageType["url"][];
   references: (number | string)[];
 }
