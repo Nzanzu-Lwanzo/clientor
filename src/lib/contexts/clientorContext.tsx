@@ -1,9 +1,11 @@
 import React, {
   createContext,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
+import ClientorStylerApi from "../functionalities/stylers/core/api";
 
 export type EditMode =
   | "bold"
@@ -63,6 +65,14 @@ interface ClientorContexttype {
 
   countImagesInDb: number;
   setCountImagesInDb: React.Dispatch<React.SetStateAction<number>>;
+
+  styler: ClientorStylerApi | undefined;
+  setStyler: React.Dispatch<
+    React.SetStateAction<ClientorStylerApi | undefined>
+  >;
+
+  selectedRange: Range | undefined;
+  setSelectedRange: React.Dispatch<React.SetStateAction<Range | undefined>>;
 }
 
 const ClientorContext = createContext<ClientorContexttype | null>(null);
@@ -83,6 +93,12 @@ export const ClientorContextProvider = ({
   const [editModes, setEditMode] = useState<EditMode[]>(["none"]);
   const [editorType, setEditorType] = useState<EditorType>("rtx");
   const [idb, setIdb] = useState<IDBDatabase | null>(null);
+  const [selectedRange, setSelectedRange] = useState<Range | undefined>(
+    undefined
+  );
+  const [styler, setStyler] = useState<ClientorStylerApi | undefined>(
+    undefined
+  );
   const [countImagesInDb, setCountImagesInDb] = useState(0);
   const textAreaDivRef = useRef<HTMLDivElement | null>(null);
   const previewDivRef = useRef<HTMLDivElement | null>(null);
@@ -106,7 +122,21 @@ export const ClientorContextProvider = ({
     setIdb,
     countImagesInDb,
     setCountImagesInDb,
+    styler,
+    setStyler,
+    selectedRange,
+    setSelectedRange,
   };
+
+  useEffect(() => {
+    const styler = new ClientorStylerApi({
+      element: textAreaDivRef.current,
+      cb(selection) {
+        return selection?.getRangeAt(0);
+      },
+    });
+    setStyler(styler);
+  }, []);
 
   return (
     <ClientorContext.Provider value={value}>

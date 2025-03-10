@@ -9,6 +9,7 @@ import { getImageIDFromDOM } from "../../../lib/helpers/getters";
 const Textarea = () => {
   // STATES
   const { maxContentLength } = useClientorUserContext();
+  const { setSelectedRange } = useClientorContext();
 
   const {
     setRawText,
@@ -45,6 +46,7 @@ const Textarea = () => {
 
     let handleDbClick: (event: MouseEvent) => void;
     let handleOpenLinkOnClick: (event: MouseEvent | TouchEvent) => void;
+    let handleTrackCursorPosition: (event: Event) => void;
 
     if (textarea) {
       // Delete images on double click
@@ -52,7 +54,6 @@ const Textarea = () => {
         const element = event.target as HTMLElement;
 
         if (element.matches("img")) {
-
           let id = getImageIDFromDOM(element as HTMLImageElement);
 
           connectToDb.then((database) => {
@@ -84,6 +85,15 @@ const Textarea = () => {
           window.open(anchorTag.href);
         }
       };
+
+      // Save the position of the cursor, so the user can insert something
+      handleTrackCursorPosition = function () {
+        try {
+          const selectedRange = window.getSelection();
+          setSelectedRange(selectedRange?.getRangeAt(0));
+        } catch {}
+      };
+      textarea.addEventListener("selectstart", handleTrackCursorPosition);
 
       textarea.addEventListener("dblclick", handleDbClick);
       textarea.addEventListener("click", handleOpenLinkOnClick);

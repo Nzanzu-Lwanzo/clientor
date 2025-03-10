@@ -22,3 +22,4 @@ export const throttler = (fn: (args: any) => void, delay: number) => {
     }
   };
 };
+

@@ -1,9 +1,9 @@
+import { LocalImageType, RemoteImageType } from "../contexts/clientorContext";
+import { LinkDataType } from "../functionalities/insertLinks";
+import { isLocalImage } from "../types/types";
+
 export function getSelectionData() {
   const selection = window.getSelection();
-
-  if (selection?.isCollapsed || !selection) {
-    return;
-  }
 
   if (selection) {
     /*
@@ -23,8 +23,14 @@ export function getSelectionData() {
     */
     let selectionStartPosition = selection.anchorOffset;
     let selectionEndPosition = selection.focusOffset;
-
     let selectedText = selection.toString();
+    let range: Range | null;
+    try {
+      range = selection.getRangeAt(0);
+    } catch {
+      range = null;
+    }
+
     return {
       selectedText,
       selectionStartPosition: Math.min(
@@ -35,6 +41,7 @@ export function getSelectionData() {
         selectionStartPosition,
         selectionEndPosition
       ),
+      range,
     };
   }
 }
@@ -72,4 +79,21 @@ export const getImageIDFromDOM = (image: HTMLImageElement) => {
   let id = classname.split("-").at(-1);
 
   return id;
+};
+
+export const getImageNode = (image: LocalImageType | RemoteImageType) => {
+  const node = document.createElement("img");
+  node.src = isLocalImage(image) ? getImageURL(image.file) : image.url;
+  let alt = `Preview image ${image.id}`;
+  node.alt = alt;
+  node.className = `clientor-inserted-image-${image.id}`;
+  return node;
+};
+
+export const getLinkNode = (linkData: LinkDataType) => {
+  const node = document.createElement("a");
+  node.href = linkData.link;
+  node.target = `_${linkData.target}` || "_blank";
+  node.text = linkData.label || linkData.link;
+  return node;
 };

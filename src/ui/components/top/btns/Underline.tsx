@@ -1,21 +1,23 @@
 import IconBtn from "../../_general/IconBtn";
 import { Underline as UnderlineIcon } from "lucide-react";
-import useUnderline from "../../../../lib/functionalities/stylers/underline";
 import { useClientorContext } from "../../../../lib/contexts/clientorContext";
 
 const Underline = () => {
   // STATES
-  const { editModes } = useClientorContext();
-  // CH
-  const { toggler, handleFeature } = useUnderline();
+  const { setEditMode, styler } = useClientorContext();
 
   return (
     <IconBtn
       handleClick={() => {
-        if (!editModes.includes("bold")) {
-          handleFeature();
-        }
-        toggler();
+        styler?.handleUnderline(() => {
+          setEditMode((prevModes) => {
+            if (!prevModes.includes("underline")) {
+              return [...prevModes, "underline"];
+            } else {
+              return prevModes.filter((mode) => mode !== "underline");
+            }
+          });
+        });
       }}
       editMode="underline"
       type="button"

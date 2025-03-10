@@ -1,23 +1,23 @@
 import IconBtn from "../../_general/IconBtn";
 import { Italic as ItalicIcon } from "lucide-react";
-import useItalic from "../../../../lib/functionalities/stylers/italic";
 import { useClientorContext } from "../../../../lib/contexts/clientorContext";
 
 const Italic = () => {
   // STATES
-  const { editModes } = useClientorContext();
-
-  // CH
-  const { toggler, handleFeature } = useItalic();
+  const { setEditMode, styler } = useClientorContext();
 
   return (
     <IconBtn
       handleClick={() => {
-        if (!editModes.includes("bold")) {
-          handleFeature();
-        }
-
-        toggler();
+        styler?.handleUnderline(() => {
+          setEditMode((prevModes) => {
+            if (!prevModes.includes("italic")) {
+              return [...prevModes, "italic"];
+            } else {
+              return prevModes.filter((mode) => mode !== "italic");
+            }
+          });
+        });
       }}
       editMode="italic"
       type="button"

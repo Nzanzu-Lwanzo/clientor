@@ -1,35 +1,30 @@
 import { useClientorContext } from "../../../../lib/contexts/clientorContext";
 import IconBtn from "../../_general/IconBtn";
 import { Bold as BoldIcon } from "lucide-react";
-import useBold from "../../../../lib/functionalities/stylers/bold";
 
 const Bold = () => {
   // STATES
-  const { editModes } = useClientorContext();
-  // CH
-  const { toggler, handleFeature } = useBold();
+  const { styler, setEditMode } = useClientorContext();
 
   return (
     <IconBtn
       handleClick={() => {
-        /*
-          The following functions must be called in this order.
+        styler?.handleBold(() => {
+          setEditMode((prevModes) => {
+            /*
+              We should persistently add the "bold" editMode to the array
+              if we weren't just styling the lately selected content.
 
-          Explanation : when we click on the bold button,
-          if the bold editMode is already in the editModes array,
-          that means we're trying to switch off the styling, 
-          therefore we don't need to apply any style. But, if 
-          the editMode is not in the array, then we'll apply the style.
-
-          Why call the two functions in that order ? Because we 
-          must check the current state of the editModes array (and make
-          decisions based on tha ) before we update it.
-        */
-        if (!editModes.includes("bold")) {
-          handleFeature();
-        }
-
-        toggler();
+              So, if there's a selected content, we won't add the mode
+              to the state array.
+            */
+            if (!prevModes.includes("bold")) {
+              return [...prevModes, "bold"];
+            } else {
+              return prevModes.filter((mode) => mode !== "bold");
+            }
+          });
+        });
       }}
       editMode="bold"
       type="button"

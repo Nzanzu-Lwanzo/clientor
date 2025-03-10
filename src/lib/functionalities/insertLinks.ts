@@ -1,5 +1,6 @@
 import { useClientorContext } from "../contexts/clientorContext";
 import { formatLink } from "../helpers/formatters";
+import { getLinkNode } from "../helpers/getters";
 
 export interface LinkDataType {
   link: string;
@@ -8,7 +9,7 @@ export interface LinkDataType {
 }
 
 export default function useInsertLinks() {
-  const { setEditMode, textAreaDivRef, editorType, setRawText } =
+  const { setEditMode, textAreaDivRef, editorType, setRawText, selectedRange } =
     useClientorContext();
 
   return {
@@ -38,24 +39,36 @@ export default function useInsertLinks() {
       }
 
       const textarea = textAreaDivRef.current;
+
       if (!textarea) {
         return;
       }
 
       // Insert the link inside of the textarea
-      const { mdx, rtx } = formatLink(linkData);
+      // const { mdx, rtx } = formatLink(linkData);
       switch (editorType) {
         case "mdx": {
-          textarea.innerHTML += ` ${mdx}`;
-          setRawText((prev) => prev.concat(` ${mdx}`));
+          /*
+            textarea.innerHTML += ` ${mdx}`;
+            setRawText((prev) => prev.concat(` ${mdx}`));
+          */
           break;
         }
 
         case "rtx": {
-          textarea.innerHTML += ` ${rtx()}`;
-          setRawText((prev) => {
-            return prev.concat(` ${linkData.label || linkData.link}`);
-          });
+          // Insert where the user positioned the cursor
+          if (selectedRange) {
+            const node = getLinkNode(linkData);
+            selectedRange.insertNode(node);
+          }
+          // Otherwise, just add it at the end
+          else {
+            const { rtx } = formatLink(linkData);
+            textarea.innerHTML += ` ${rtx()}`;
+            setRawText((prev) => {
+              return prev.concat(` ${linkData.label || linkData.link}`);
+            });
+          }
           break;
         }
       }

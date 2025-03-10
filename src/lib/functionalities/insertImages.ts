@@ -33,7 +33,7 @@ export default function useInsertImages() {
   */
   const { max: maxImagesCount } = Object.assign(
     useClientorUserContext().imagesValidate || {},
-    ClientorDefaultConfiguration.imagesValidate,
+    ClientorDefaultConfiguration.imagesValidate
   );
 
   return {

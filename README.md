@@ -24,16 +24,16 @@ All the code lives inside of the src folder which contains three subfolders.
 
 4. #### functionalities
 
-   This is **one** of the core folders of the package. [It contains files that expose each a hook](src\lib\functionalities) that handles all the functionalities of the component from toggling the visibility of the buttons to inserting or formatting. That's the place to define the behavior of the different features of the component.
+   This is **one** of the core folders of the package. [It contains files that expose each a hook](src\lib\functionalities) that handles all the functionalities of the component from toggling the visibility of the buttons to inserting or formatting. It also contains a folder named **stylers/core** that contains the **API** to handle all the styling (bold, italic, underline, ...). That's the place to define the behavior of the different features of the component.
 
 5. #### clientor.config.ts
 
-    This [file](src/clientor.config.ts) contains the default configuration values defined for a Clientor component. They should be overridable by the user configuration values. 
+   This [file](src/clientor.config.ts) contains the default configuration values defined for a Clientor component. They should be overridable by the user configuration values.
 
 6. #### clientorUserContext.tsx
 
-    This file contains a context exposed along with the ClientorBox component itself. All the configurations a user should provide to have a control on the behavior of the component should be passed to this context so they can be accessed in all the components.
-    Not be confused with the __clientorContext.tsx__. This is the context used internally. 
+   This file contains a context exposed along with the ClientorBox component itself. All the configurations a user should provide to have a control on the behavior of the component should be passed to this context so they can be accessed in all the components.
+   Not be confused with the **clientorContext.tsx**. This is the context used internally.
 
 ## Components structure
 
@@ -57,10 +57,10 @@ const Component = () => {
   const { data, auth } = useContext(SomeContext);
   const addNewToList = useSomeStore((state) => state.addNewToList);
 
-   // 2. RH
-  const [transition,startTransition] = useTransition(()=>{
-   // ...
-  })
+  // 2. RH
+  const [transition, startTransition] = useTransition(() => {
+    // ...
+  });
 
   // 3. CH
   const { handleClick, loading } = useCustomHook();
@@ -105,7 +105,7 @@ const Component = () => {
   }, []);
 
   //   7. IVS
-  let buttonLabel = loading ? "Wait ..." : "Create"
+  let buttonLabel = loading ? "Wait ..." : "Create";
 
   // 8. TSX | JSX
 
@@ -125,27 +125,29 @@ As the project is open source, we're actively encouraging people to collaborate.
 
 1. #### Steps
 
-- Join our [Telegram group](https://t.me/+wEnyU9DGJXI5Yjlk) and tell the functionality you want to work on. 
+- Join our [Telegram group](https://t.me/+wEnyU9DGJXI5Yjlk) and tell the functionality you want to work on.
 
-- Create a branch off of the **develop** branch for the feature you're going to add. 
+- Create a branch off of the **develop** branch for the feature you're going to add.
 
 - Fork or clone the **develop** branch of the repository and start working. Don't hesitate to reach out to the community in case you need any help, have any questions or any suggestions. Here's our [Telegram group invitation link](https://t.me/+wEnyU9DGJXI5Yjlk).
 
 - Regularly commit when you hit a milestone in the developement process with simple, short but clear and self-explanatory messages (not more than 128 characters).
 
-- Once you have a usable version of what you're working on, make a pull request with a clear explanation of how the functionnality works and what files or parts of the project are concerned. 
+- Once you have a usable version of what you're working on, make a pull request with a clear explanation of how the functionnality works and what files or parts of the project are concerned.
 
 2. #### Conventions
 
 - The branches should follow this naming convention :
+
 ```txt
   feature/feature-name
 ```
+
 **feature-name** being the name of the feature you want to work on (bold,underline,insert images, ...)
 
 - Commit messages should not be more than 128 characters length.
 - Components should follow the structure described above and each part should be labelled.
-- Don't edit the README file. This file will be being edited only when the code proposed in a pull request has been adopted and merged with the **develop** branch code. 
+- Don't edit the README file. This file will be being edited only when the code proposed in a pull request has been adopted and merged with the **develop** branch code.
 
 ## Third party packages used
 
