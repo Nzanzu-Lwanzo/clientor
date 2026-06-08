@@ -4,15 +4,31 @@ import { useClientorContext } from "../../../../lib/contexts/clientorContext";
 
 const Italic = () => {
   // STATES
-  const { setEditMode, styler, editorType, selectedRange, setRawText, textAreaDivRef } = useClientorContext();
+  const { setEditMode, styler, editorType, selectedRange, setRawText, textAreaDivRef, setSelectedRange } = useClientorContext();
 
   const handleMdxItalic = () => {
-    if (selectedRange && !selectedRange.collapsed) {
-      const selectedText = selectedRange.toString();
-      const italicText = `*${selectedText}*`;
-      const textNode = document.createTextNode(italicText);
-      selectedRange.deleteContents();
-      selectedRange.insertNode(textNode);
+    if (selectedRange) {
+      if (!selectedRange.collapsed) {
+        const selectedText = selectedRange.toString();
+        const italicText = `*${selectedText}*`;
+        const textNode = document.createTextNode(italicText);
+        selectedRange.deleteContents();
+        selectedRange.insertNode(textNode);
+      } else {
+        // Collapsed range: insert ** and place caret in middle
+        const italicTags = document.createTextNode("**");
+        selectedRange.insertNode(italicTags);
+        
+        // Move caret in middle
+        const newRange = document.createRange();
+        newRange.setStart(italicTags, 1);
+        newRange.collapse(true);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(newRange);
+        setSelectedRange(newRange);
+      }
+      
       if (textAreaDivRef.current) {
         setRawText(textAreaDivRef.current.innerText);
       }

@@ -4,15 +4,31 @@ import { Bold as BoldIcon } from "lucide-react";
 
 const Bold = () => {
   // STATES
-  const { styler, setEditMode, editorType, selectedRange, setRawText, textAreaDivRef } = useClientorContext();
+  const { styler, setEditMode, editorType, selectedRange, setRawText, textAreaDivRef, setSelectedRange } = useClientorContext();
 
   const handleMdxBold = () => {
-    if (selectedRange && !selectedRange.collapsed) {
-      const selectedText = selectedRange.toString();
-      const boldText = `**${selectedText}**`;
-      const textNode = document.createTextNode(boldText);
-      selectedRange.deleteContents();
-      selectedRange.insertNode(textNode);
+    if (selectedRange) {
+      if (!selectedRange.collapsed) {
+        const selectedText = selectedRange.toString();
+        const boldText = `**${selectedText}**`;
+        const textNode = document.createTextNode(boldText);
+        selectedRange.deleteContents();
+        selectedRange.insertNode(textNode);
+      } else {
+        // Collapsed range: insert **** and place caret in middle
+        const boldTags = document.createTextNode("****");
+        selectedRange.insertNode(boldTags);
+        
+        // Move caret in middle
+        const newRange = document.createRange();
+        newRange.setStart(boldTags, 2);
+        newRange.collapse(true);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(newRange);
+        setSelectedRange(newRange);
+      }
+      
       if (textAreaDivRef.current) {
         setRawText(textAreaDivRef.current.innerText);
       }
