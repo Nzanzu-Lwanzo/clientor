@@ -3,9 +3,10 @@ import { useState, useTransition } from "react";
 import { useClientorUserContext } from "../contexts/clientorUserContext";
 import ClientorDefaultConfiguration from "../../clientor.config";
 import { formatLink } from "../helpers/formatters";
+import { getLinkNode } from "../helpers/getters";
 
 export default function useReference() {
-  const { setEditMode, textAreaDivRef, setRawText, editorType, setReferences } =
+  const { setEditMode, textAreaDivRef, setRawText, editorType, setReferences, selectedRange, setSelectedRange } =
     useClientorContext();
   /*
     Merge the option values passed through the context provider
@@ -80,33 +81,66 @@ export default function useReference() {
       let absolute_url = ((foundRef as any)["absolute_url"] ||
         formatURL!(foundRef)) as string;
 
-      // Insert the reference in the document flow
-      const { mdx, rtx } = formatLink({
+      const linkData = {
         link: absolute_url.trim().replaceAll(" ", ""),
         label: `@${foundRef[refLabel!]}`,
-        target: "blank",
-      });
+        target: "blank" as const,
+      };
 
+      const refocus = () => {
+        textarea.focus();
+        // Hide the floating card
+        setEditMode((prevModes) =>
+          prevModes.filter((_mode) => _mode !== "$reference")
+        );
+      };
+
+      const placeCaretAfter = (node: Node) => {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.setStartAfter(node);
+        range.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        setSelectedRange(range);
+      };
+
+      // Insert the reference in the document flow
       switch (editorType) {
         case "mdx": {
-          textarea.innerHTML += ` ${mdx}`;
-          setRawText((prev) => prev.concat(` ${mdx}`));
+          const { mdx } = formatLink(linkData);
+          const textNode = document.createTextNode(` ${mdx} `);
+          if (selectedRange) {
+            selectedRange.insertNode(textNode);
+            placeCaretAfter(textNode);
+          } else {
+            textarea.appendChild(textNode);
+            placeCaretAfter(textNode);
+          }
           break;
         }
 
         case "rtx": {
-          textarea.innerHTML += ` ${rtx()}`;
-          setRawText((prev) => {
-            return prev.concat(` ${`@${foundRef[refLabel!]}` || absolute_url}`);
-          });
+          const node = getLinkNode(linkData);
+          const spaceBefore = document.createTextNode(" ");
+          const spaceAfter = document.createTextNode(" ");
+          if (selectedRange) {
+            selectedRange.insertNode(spaceAfter);
+            selectedRange.insertNode(node);
+            selectedRange.insertNode(spaceBefore);
+            placeCaretAfter(spaceAfter);
+          } else {
+            textarea.appendChild(spaceBefore);
+            textarea.appendChild(node);
+            textarea.appendChild(spaceAfter);
+            placeCaretAfter(spaceAfter);
+          }
           break;
         }
       }
 
-      // Hide the floating card
-      setEditMode((prevModes) =>
-        prevModes.filter((_mode) => _mode !== "$reference")
-      );
+      setRawText(textarea.innerText);
+      refocus();
 
       // Store the reference id in a state
       setReferences((prev) => [...prev, foundRef[refId!]]);

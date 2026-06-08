@@ -15,7 +15,7 @@ export default class ClientorStylerApi implements StylerApiImplementation {
     // Listen for selection event
     document.addEventListener("selectionchange", () => {
       const $selection = window.getSelection();
-      if (!$selection?.isCollapsed) {
+      if ($selection && !$selection.isCollapsed) {
         this.selection = $selection;
         // Execute the callback and get the range
         if (cb) {
@@ -38,6 +38,36 @@ export default class ClientorStylerApi implements StylerApiImplementation {
 
   handleUnderline(cb: () => void) {
     this.$globalHandler({ cb, style: "underline" });
+  }
+
+  handleHeading(level: number, cb: () => void) {
+    if (this.range) {
+      const tag = document.createElement(`h${level}`);
+      try {
+        this.range.surroundContents(tag);
+        tag.insertAdjacentHTML("afterend", "<br>");
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      cb();
+    }
+  }
+
+  handleList(type: "unordered" | "ordered", cb: () => void) {
+    if (this.range) {
+      const listTag = document.createElement(type === "unordered" ? "ul" : "ol");
+      const listItem = document.createElement("li");
+      try {
+        this.range.surroundContents(listItem);
+        listTag.appendChild(listItem);
+        this.range.insertNode(listTag);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      cb();
+    }
   }
 
   $globalHandler({ cb, style }: { cb: () => void; style: StyleType }) {
@@ -70,18 +100,6 @@ export default class ClientorStylerApi implements StylerApiImplementation {
         }
       }
     } else {
-      /*
-        This callback handles the toggling of the visual state
-        of the button. That is, it sets the state that enables
-        adding the active class to the button so it become svg:blue
-        and bg:kinda-grey.
-
-        We want to add the active state only when the user clicks
-        on the button to style the text they're about to type.
-
-        But in case they just want to style the currently
-        selected text, we don't want to active to be persisted.
-      */
       cb();
     }
   }

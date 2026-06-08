@@ -3,6 +3,7 @@ import useStorage from "../hooks/useStorage";
 import ClientorDefaultConfiguration from "../../clientor.config";
 import { useClientorUserContext } from "../contexts/clientorUserContext";
 import { formatImage } from "../helpers/formatters";
+import { getImageNode } from "../helpers/getters";
 
 export default function useInsertImages() {
   const {
@@ -15,6 +16,8 @@ export default function useInsertImages() {
     textAreaDivRef,
     editorType,
     setRawText,
+    selectedRange,
+    setSelectedRange,
   } = useClientorContext();
 
   const { storeImage } = useStorage({
@@ -65,22 +68,65 @@ export default function useInsertImages() {
 
       if (!textarea) return;
 
-      const imagesEltString = [...localImages, ...remoteImages]
-        .map((image) => {
-          const imgElet = formatImage(image);
-          return editorType === "rtx" ? imgElet.rtx() : imgElet.mdx;
-        })
-        .join(" ");
+      const refocus = () => {
+        textarea.focus();
+        // Hide the floating card
+        setEditMode((prevModes) =>
+          prevModes.filter((_mode) => _mode !== "$ins_img")
+        );
+      };
 
-      // This is for rtx
-      textarea.innerHTML += " ".concat(imagesEltString, "<br/><br/>");
-      // This is for mdx
-      setRawText((prevText) => `${prevText} ${imagesEltString}`);
+      const placeCaretAfter = (node: Node) => {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.setStartAfter(node);
+        range.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        setSelectedRange(range);
+      };
 
-      // Hide the floating card
-      setEditMode((prevModes) =>
-        prevModes.filter((_mode) => _mode !== "$ins_img")
-      );
+      const allImages = [...localImages, ...remoteImages];
+
+      if (editorType === "rtx") {
+        let lastNode: Node | null = null;
+        allImages.forEach((image) => {
+          const node = getImageNode(image);
+          const spaceBefore = document.createTextNode(" ");
+          const spaceAfter = document.createTextNode(" ");
+          
+          if (selectedRange) {
+            selectedRange.insertNode(spaceAfter);
+            selectedRange.insertNode(node);
+            selectedRange.insertNode(spaceBefore);
+            lastNode = spaceAfter;
+          } else {
+            textarea.appendChild(spaceBefore);
+            textarea.appendChild(node);
+            textarea.appendChild(spaceAfter);
+            lastNode = spaceAfter;
+          }
+        });
+        if (lastNode) placeCaretAfter(lastNode);
+      } else {
+        // mdx mode
+        let lastNode: Node | null = null;
+        allImages.forEach((image) => {
+          const { mdx } = formatImage(image);
+          const textNode = document.createTextNode(` ${mdx} `);
+          if (selectedRange) {
+            selectedRange.insertNode(textNode);
+            lastNode = textNode;
+          } else {
+            textarea.appendChild(textNode);
+            lastNode = textNode;
+          }
+        });
+        if (lastNode) placeCaretAfter(lastNode);
+      }
+
+      setRawText(textarea.innerText);
+      refocus();
 
       // TEMPORARILY STORE THE IMAGES
       storeImage();
@@ -89,8 +135,6 @@ export default function useInsertImages() {
       // more than once
       setLocalImages([]);
       setRemoteImages([]);
-
-      // Add
 
       event.currentTarget.reset();
     },

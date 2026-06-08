@@ -89,11 +89,20 @@ const Textarea = () => {
       // Save the position of the cursor, so the user can insert something
       handleTrackCursorPosition = function () {
         try {
-          const selectedRange = window.getSelection();
-          setSelectedRange(selectedRange?.getRangeAt(0));
+          const selection = window.getSelection();
+          if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            // Ensure the range is within the textarea
+            if (textarea.contains(range.commonAncestorContainer)) {
+              setSelectedRange(range);
+            }
+          }
         } catch {}
       };
       textarea.addEventListener("selectstart", handleTrackCursorPosition);
+      textarea.addEventListener("mouseup", handleTrackCursorPosition);
+      textarea.addEventListener("keyup", handleTrackCursorPosition);
+      textarea.addEventListener("click", handleTrackCursorPosition);
 
       textarea.addEventListener("dblclick", handleDbClick);
       textarea.addEventListener("click", handleOpenLinkOnClick);
@@ -102,12 +111,16 @@ const Textarea = () => {
 
     return () => {
       if (textarea) {
+        textarea.removeEventListener("selectstart", handleTrackCursorPosition);
+        textarea.removeEventListener("mouseup", handleTrackCursorPosition);
+        textarea.removeEventListener("keyup", handleTrackCursorPosition);
+        textarea.removeEventListener("click", handleTrackCursorPosition);
         textarea.removeEventListener("dblclick", handleDbClick);
         textarea.removeEventListener("click", handleOpenLinkOnClick);
         textarea.removeEventListener("touchstart", handleOpenLinkOnClick);
       }
     };
-  }, []);
+  }, [setSelectedRange, textAreaDivRef, setCountImagesInDb, deleteImageFromStore]);
 
   useEffect(() => {
     /*
@@ -137,6 +150,10 @@ const Textarea = () => {
     };
 
     window.addEventListener("load", handleClearTempStorageOnLoad);
+
+    return () => {
+      window.removeEventListener("load", handleClearTempStorageOnLoad);
+    };
   }, []);
 
   return (

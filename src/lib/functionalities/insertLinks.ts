@@ -9,7 +9,7 @@ export interface LinkDataType {
 }
 
 export default function useInsertLinks() {
-  const { setEditMode, textAreaDivRef, editorType, setRawText, selectedRange } =
+  const { setEditMode, textAreaDivRef, editorType, setRawText, selectedRange, setSelectedRange } =
     useClientorContext();
 
   return {
@@ -44,39 +44,67 @@ export default function useInsertLinks() {
         return;
       }
 
+      const refocus = () => {
+        textarea.focus();
+        // Hide the floating card
+        setEditMode((prevModes) =>
+          prevModes.filter((_mode) => _mode !== "$ins_link")
+        );
+      };
+
+      const placeCaretAfter = (node: Node) => {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.setStartAfter(node);
+        range.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        setSelectedRange(range);
+      };
+
       // Insert the link inside of the textarea
-      // const { mdx, rtx } = formatLink(linkData);
       switch (editorType) {
         case "mdx": {
-          /*
-            textarea.innerHTML += ` ${mdx}`;
-            setRawText((prev) => prev.concat(` ${mdx}`));
-          */
+          const { mdx } = formatLink(linkData);
+          const textNode = document.createTextNode(` ${mdx} `);
+          
+          if (selectedRange) {
+            selectedRange.deleteContents();
+            selectedRange.insertNode(textNode);
+            placeCaretAfter(textNode);
+          } else {
+            textarea.appendChild(textNode);
+            placeCaretAfter(textNode);
+          }
+          setRawText(textarea.innerText);
           break;
         }
 
         case "rtx": {
-          // Insert where the user positioned the cursor
+          const node = getLinkNode(linkData);
+          const spaceBefore = document.createTextNode(" ");
+          const spaceAfter = document.createTextNode(" ");
+          
           if (selectedRange) {
-            const node = getLinkNode(linkData);
+            selectedRange.deleteContents();
+            selectedRange.insertNode(spaceAfter);
             selectedRange.insertNode(node);
+            selectedRange.insertNode(spaceBefore);
+            placeCaretAfter(spaceAfter);
           }
           // Otherwise, just add it at the end
           else {
-            const { rtx } = formatLink(linkData);
-            textarea.innerHTML += ` ${rtx()}`;
-            setRawText((prev) => {
-              return prev.concat(` ${linkData.label || linkData.link}`);
-            });
+            textarea.appendChild(spaceBefore);
+            textarea.appendChild(node);
+            textarea.appendChild(spaceAfter);
+            placeCaretAfter(spaceAfter);
           }
+          setRawText(textarea.innerText);
           break;
         }
       }
 
-      // Hide the floating card
-      setEditMode((prevModes) =>
-        prevModes.filter((_mode) => _mode !== "$ins_link")
-      );
+      refocus();
 
       // Delete all the informations entered
       event.currentTarget.reset();
