@@ -8,30 +8,59 @@ const Italic = () => {
 
   const handleMdxItalic = () => {
     if (selectedRange) {
+      const textarea = textAreaDivRef.current;
+      if (!textarea) return;
+
       if (!selectedRange.collapsed) {
         const selectedText = selectedRange.toString();
-        const italicText = `*${selectedText}*`;
-        const textNode = document.createTextNode(italicText);
-        selectedRange.deleteContents();
-        selectedRange.insertNode(textNode);
+        // Toggle: check if already wrapped in *
+        if (selectedText.startsWith("*") && selectedText.endsWith("*") && !selectedText.startsWith("**")) {
+          const unitalicizedText = selectedText.slice(1, -1);
+          const textNode = document.createTextNode(unitalicizedText);
+          selectedRange.deleteContents();
+          selectedRange.insertNode(textNode);
+        } else {
+          const italicText = `*${selectedText}*`;
+          const textNode = document.createTextNode(italicText);
+          selectedRange.deleteContents();
+          selectedRange.insertNode(textNode);
+        }
       } else {
-        // Collapsed range: insert ** and place caret in middle
-        const italicTags = document.createTextNode("**");
-        selectedRange.insertNode(italicTags);
-        
-        // Move caret in middle
-        const newRange = document.createRange();
-        newRange.setStart(italicTags, 1);
-        newRange.collapse(true);
+        // Collapsed range: toggle logic
         const selection = window.getSelection();
-        selection?.removeAllRanges();
-        selection?.addRange(newRange);
-        setSelectedRange(newRange);
+        if (selection && selection.anchorNode) {
+          const content = selection.anchorNode.textContent || "";
+          const offset = selection.anchorOffset;
+          const before = content.slice(0, offset);
+          const after = content.slice(offset);
+
+          if (before.endsWith("*") && after.startsWith("*") && !before.endsWith("**")) {
+            // Toggle OFF: remove * from both sides
+            const newContent = before.slice(0, -1) + after.slice(1);
+            selection.anchorNode.textContent = newContent;
+            
+            const newRange = document.createRange();
+            newRange.setStart(selection.anchorNode, offset - 1);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            setSelectedRange(newRange);
+          } else {
+            // Toggle ON: insert **
+            const italicTags = document.createTextNode("**");
+            selectedRange.insertNode(italicTags);
+            
+            const newRange = document.createRange();
+            newRange.setStart(italicTags, 1);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            setSelectedRange(newRange);
+          }
+        }
       }
       
-      if (textAreaDivRef.current) {
-        setRawText(textAreaDivRef.current.innerText);
-      }
+      setRawText(textarea.innerText);
     } else {
       setEditMode((prev) => prev.includes("italic") ? prev.filter(m => m !== "italic") : [...prev, "italic"]);
     }

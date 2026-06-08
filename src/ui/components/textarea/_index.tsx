@@ -33,7 +33,7 @@ const Textarea = () => {
     if (maxContentLength && rawText.length >= maxContentLength.value) {
       maxContentLength?.handler();
     }
-  }, []);
+  }, [maxContentLength, rawText.length, setRawText]);
 
   // EFFECTS
   useEffect(() => {
@@ -47,6 +47,7 @@ const Textarea = () => {
     let handleDbClick: (event: MouseEvent) => void;
     let handleOpenLinkOnClick: (event: MouseEvent | TouchEvent) => void;
     let handleTrackCursorPosition: (event: Event) => void;
+    let handlePersistentFocus: (event: MouseEvent) => void;
 
     if (textarea) {
       // Delete images on double click
@@ -99,6 +100,21 @@ const Textarea = () => {
           }
         } catch {}
       };
+
+      // Requirement 1: Persistent Focus
+      handlePersistentFocus = function (event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        const mainContainer = document.getElementById("clientor-main-container");
+        
+        // If we click inside the main container but not in the textarea, focus the textarea
+        if (mainContainer?.contains(target) && !textarea.contains(target)) {
+          // Check if we are clicking a button (buttons handle focus themselves or prevent it)
+          if (!target.closest(".icon-btn") && !target.closest(".square-btn") && !target.closest(".floating")) {
+             textarea.focus();
+          }
+        }
+      };
+
       textarea.addEventListener("selectstart", handleTrackCursorPosition);
       textarea.addEventListener("mouseup", handleTrackCursorPosition);
       textarea.addEventListener("keyup", handleTrackCursorPosition);
@@ -107,6 +123,8 @@ const Textarea = () => {
       textarea.addEventListener("dblclick", handleDbClick);
       textarea.addEventListener("click", handleOpenLinkOnClick);
       textarea.addEventListener("touchstart", handleOpenLinkOnClick);
+      
+      document.addEventListener("mousedown", handlePersistentFocus);
     }
 
     return () => {
@@ -118,6 +136,7 @@ const Textarea = () => {
         textarea.removeEventListener("dblclick", handleDbClick);
         textarea.removeEventListener("click", handleOpenLinkOnClick);
         textarea.removeEventListener("touchstart", handleOpenLinkOnClick);
+        document.removeEventListener("mousedown", handlePersistentFocus);
       }
     };
   }, [setSelectedRange, textAreaDivRef, setCountImagesInDb, deleteImageFromStore]);
@@ -154,7 +173,7 @@ const Textarea = () => {
     return () => {
       window.removeEventListener("load", handleClearTempStorageOnLoad);
     };
-  }, []);
+  }, [emptyStore]);
 
   return (
     <div

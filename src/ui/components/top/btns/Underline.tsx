@@ -8,30 +8,59 @@ const Underline = () => {
 
   const handleMdxUnderline = () => {
     if (selectedRange) {
+      const textarea = textAreaDivRef.current;
+      if (!textarea) return;
+
       if (!selectedRange.collapsed) {
         const selectedText = selectedRange.toString();
-        const underlinedText = `<u>${selectedText}</u>`;
-        const textNode = document.createTextNode(underlinedText);
-        selectedRange.deleteContents();
-        selectedRange.insertNode(textNode);
+        // Toggle: check if already wrapped in <u></u>
+        if (selectedText.startsWith("<u>") && selectedText.endsWith("</u>")) {
+          const unboldedText = selectedText.slice(3, -4);
+          const textNode = document.createTextNode(unboldedText);
+          selectedRange.deleteContents();
+          selectedRange.insertNode(textNode);
+        } else {
+          const boldText = `<u>${selectedText}</u>`;
+          const textNode = document.createTextNode(boldText);
+          selectedRange.deleteContents();
+          selectedRange.insertNode(textNode);
+        }
       } else {
-        // Collapsed range: insert <u></u> and place caret in middle
-        const underlineTags = document.createTextNode("<u></u>");
-        selectedRange.insertNode(underlineTags);
-        
-        // Move caret in middle (between <u> and </u>)
-        const newRange = document.createRange();
-        newRange.setStart(underlineTags, 3);
-        newRange.collapse(true);
+        // Collapsed range: toggle logic
         const selection = window.getSelection();
-        selection?.removeAllRanges();
-        selection?.addRange(newRange);
-        setSelectedRange(newRange);
+        if (selection && selection.anchorNode) {
+          const content = selection.anchorNode.textContent || "";
+          const offset = selection.anchorOffset;
+          const before = content.slice(0, offset);
+          const after = content.slice(offset);
+
+          if (before.endsWith("<u>") && after.startsWith("</u>")) {
+            // Toggle OFF: remove <u></u> from both sides
+            const newContent = before.slice(0, -3) + after.slice(4);
+            selection.anchorNode.textContent = newContent;
+            
+            const newRange = document.createRange();
+            newRange.setStart(selection.anchorNode, offset - 3);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            setSelectedRange(newRange);
+          } else {
+            // Toggle ON: insert <u></u>
+            const underlineTags = document.createTextNode("<u></u>");
+            selectedRange.insertNode(underlineTags);
+            
+            const newRange = document.createRange();
+            newRange.setStart(underlineTags, 3);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            setSelectedRange(newRange);
+          }
+        }
       }
       
-      if (textAreaDivRef.current) {
-        setRawText(textAreaDivRef.current.innerText);
-      }
+      setRawText(textarea.innerText);
     } else {
       setEditMode((prev) => prev.includes("underline") ? prev.filter(m => m !== "underline") : [...prev, "underline"]);
     }
